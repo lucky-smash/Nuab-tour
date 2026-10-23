@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Atlantic Editorial — design tokens
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-navy: #233a50;
+  --color-midnight: #172b3d;
+  --color-navy-deep: #172b3d;
+  --color-powder: #dee8f4;
+  --color-sky: #a8c9e8;
+  --color-ivory: #f6f2ea;
+  --color-sand: #c6a77b;
+  --color-sand-deep: #9c7f58;
+  /* one expressive accent, used sparingly: "Pink City" coral (Jaipur sandstone in evening light) */
+  --color-coral: #c95f43;
+  --color-coral-soft: #f4ddd3;
+  --color-stone: #838177;
+  --color-white: #ffffff;
+  --color-mist: #f4f7fa;
+  --color-ink: #20252b;
+  --color-muted: #566371;
+  --color-line: #d9e0e7;
+
+  --font-display: var(--font-fraunces), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --text-display-xl: clamp(3rem, 1.6rem + 6.2vw, 7.5rem);
+  --text-display-xl--line-height: 0.95;
+  --text-display-lg: clamp(2.4rem, 1.5rem + 3.8vw, 5rem);
+  --text-display-lg--line-height: 1;
+  --text-display-md: clamp(1.9rem, 1.35rem + 2.2vw, 3.25rem);
+  --text-display-md--line-height: 1.05;
+  --text-display-sm: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+  --text-display-sm--line-height: 1.15;
+  --text-lede: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem);
+  --text-lede--line-height: 1.6;
+
+  --ease-atlas: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--color-navy);
+    font-variation-settings: "opsz" 96, "SOFT" 30;
+  }
+  h4, h5, h6 { font-family: var(--font-sans); font-weight: 600; color: var(--color-ink); }
+  ::selection { background: var(--color-powder); color: var(--color-navy); }
+  :focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  img { max-width: 100%; height: auto; }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone);
+  }
+  .coord {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+  }
+  .rule { border-top: 1px solid var(--color-line); }
+  .container-x {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+    min-height: 2.875rem; padding: 0.7rem 1.35rem;
+    font-weight: 600; font-size: 0.92rem; letter-spacing: 0.01em;
+    border-radius: var(--radius-sm);
+    transition: background-color .25s var(--ease-atlas), color .25s var(--ease-atlas), border-color .25s var(--ease-atlas), transform .25s var(--ease-atlas);
+  }
+  .btn-primary { background: var(--color-navy); color: #fff; }
+  .btn-primary:hover { background: var(--color-navy-deep); }
+  .btn-ghost { border: 1px solid color-mix(in srgb, var(--color-navy) 35%, transparent); color: var(--color-navy); background: transparent; }
+  .btn-ghost:hover { border-color: var(--color-navy); background: color-mix(in srgb, var(--color-powder) 45%, transparent); }
+  .btn-light { background: #fff; color: var(--color-navy); }
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%;
+    transition: background-size .35s var(--ease-atlas);
+  }
+  .link-underline:hover { background-size: 100% 1px; }
+  .prose-atlas { color: var(--color-ink); max-width: 46rem; }
+  .prose-atlas h2 { font-size: var(--text-display-sm); margin: 2.6rem 0 0.9rem; }
+  .prose-atlas h3 { font-family: var(--font-sans); font-weight: 650; font-size: 1.15rem; color: var(--color-navy); margin: 2rem 0 0.6rem; letter-spacing: 0; }
+  .prose-atlas h4 { font-size: 1rem; margin: 1.5rem 0 .5rem; }
+  .prose-atlas p { margin: 0 0 1.05rem; }
+  .prose-atlas ul, .prose-atlas ol { margin: 0 0 1.2rem 1.2rem; }
+  .prose-atlas ul { list-style: disc; } .prose-atlas ol { list-style: decimal; }
+  .prose-atlas li { margin: .3rem 0; padding-left: .2rem; }
+  .prose-atlas li::marker { color: var(--color-stone); }
+  .prose-atlas a { color: var(--color-navy); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--color-line); }
+  .prose-atlas a:hover { text-decoration-color: var(--color-navy); }
+  .prose-atlas img { margin: 1.5rem 0; border-radius: var(--radius-sm); }
+  .prose-atlas table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1.6rem; font-size: .95rem; }
+  .prose-atlas th, .prose-atlas td { border-bottom: 1px solid var(--color-line); padding: .6rem .5rem; text-align: left; vertical-align: top; }
+  .prose-atlas th { font-weight: 600; color: var(--color-navy); }
+  .prose-atlas strong { font-weight: 650; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+@utility hairline { border: 1px solid var(--color-line); }
+@utility text-balance { text-wrap: balance; }
+@utility text-pretty { text-wrap: pretty; }
+
+/* ---------------------------------------------------------------------------
+   Contemporary details (moderate, editorial): pills, arrow nudges, index numerals, ticker
+   --------------------------------------------------------------------------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-navy) 22%, transparent);
+  padding: 0.32rem 0.8rem; font-size: 0.78rem; font-weight: 600; line-height: 1.2; color: var(--color-navy);
+  background: rgb(255 255 255 / 0.9);
+  transition: background-color .25s var(--ease-atlas), border-color .25s var(--ease-atlas), color .25s var(--ease-atlas), transform .25s var(--ease-atlas);
+}
+a.pill:hover, button.pill:hover { border-color: var(--color-navy); background: var(--color-navy); color: #fff; transform: translateY(-1px); }
+.pill-coral { border-color: transparent; background: var(--color-coral-soft); color: #8f3b25; }
+.pill-dark { border-color: transparent; background: var(--color-midnight); color: #fff; }
+.live-dot { position: relative; width: .5rem; height: .5rem; border-radius: 999px; background: var(--color-coral); }
+.live-dot::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 1.5px solid var(--color-coral); opacity: 0; animation: live-ping 2.2s ease-out infinite; }
+@keyframes live-ping { 0% { transform: scale(.6); opacity: .8; } 100% { transform: scale(1.6); opacity: 0; } }
+.btn svg, .nudge svg { transition: transform .3s var(--ease-atlas); }
+.btn:hover svg, .nudge:hover svg { transform: translateX(4px); }
+.btn:hover svg.lucide-arrow-down { transform: translateY(3px); }
+.btn-primary:hover { transform: translateY(-1px); }
+.index-num { font-family: var(--font-display); font-style: italic; font-weight: 400; font-variation-settings: "opsz" 144, "SOFT" 100; color: var(--color-coral); line-height: 1; }
+@keyframes ticker { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+.ticker-track { display: flex; width: max-content; animation: ticker 60s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } .live-dot::after { animation: none; } }
+
+/* Hero sky (CSS twin of the WebGL sky shader: shown instantly, before and without WebGL) */
+.sky-hero {
+  background:
+    radial-gradient(ellipse 42% 30% at 74% 72%, rgb(255 196 132 / 0.55), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 70% 82%, rgb(255 226 190 / 0.5), transparent 75%),
+    linear-gradient(180deg, #3f73a8 0%, #5f8fc0 22%, #a8c9e8 52%, #dfe2df 74%, #f3e2ca 88%, #f6e9d6 100%);
+}
+.sky-hero-soft {
+  background:
+    radial-gradient(ellipse 50% 40% at 78% 62%, rgb(255 205 150 / 0.45), transparent 70%),
+    linear-gradient(180deg, #5e8ebf 0%, #a8c9e8 46%, #e7e4dc 78%, #f6efe4 100%);
+}
+.paper-grain {
+  background-image: radial-gradient(rgb(131 129 119 / 0.07) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+/* Hero entrance: copy rises in sequence; CTAs are usable immediately (only opacity/transform animate) */
+@keyframes hero-rise { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+.hero-rise { opacity: 0; animation: hero-rise 0.9s var(--ease-atlas) forwards; animation-delay: var(--d, 0s); }
+@media (prefers-reduced-motion: reduce) { .hero-rise { opacity: 1; animation: none; } }
+
+/* Engraving stroke-draw */
+.engrave path, .engrave polyline, .engrave line, .engrave circle, .engrave ellipse {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.engrave[data-draw] path, .engrave[data-draw] polyline {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  animation: engrave-draw var(--dur, 1.6s) var(--ease-atlas) forwards;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes engrave-draw { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  .engrave[data-draw] path, .engrave[data-draw] polyline { stroke-dashoffset: 0; }
+}
+
+/* MapLibre restyle hooks */
+.maplibregl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px !important; background: rgb(255 255 255 / .8) !important; }
+.maplibregl-ctrl-group { border-radius: 2px !important; box-shadow: none !important; border: 1px solid var(--color-line); }

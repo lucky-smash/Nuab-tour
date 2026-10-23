@@ -1,0 +1,39 @@
+{
+  "_comment": "Maps the 21 flat-colour materials of the original SketchUp/3DS export to PBR materials. Colours are sRGB hex. The tail fin skin is re-coloured to Atlantic Navy as NUAB livery (derived asset only; the source .3ds is untouched). Engine fan/hub materials referenced PNG textures that were not shipped with the model, so they are rendered as plain metal.",
+  "map": {
+    "skp_front_defaul": "paint_white",
+    "Color_000": "paint_white",
+    "0128_White": "paint_white",
+    "Color_002": "paint_white",
+    "<Gainsboro>": "metal_light",
+    "<LightGray>": "metal_light",
+    "<Silver>": "metal_light",
+    "[0131_Silver]1": "metal_light",
+    "0131_Silver": "paint_grey",
+    "<DarkGray>1": "metal_mid",
+    "0133_Gray": "metal_mid",
+    "0134_DimGray": "metal_dark",
+    "Derrick_Pager": "metal_dark",
+    "<Landing Gear>": "metal_gear",
+    "<Black>": "rubber",
+    "Material1": "glass_dark",
+    "Translucent_Glas": "glass_light",
+    "Material6": "metal_dark",
+    "Material7": "metal_dark",
+    "Material13": "metal_dark",
+    "Material12": "titanium"
+  },
+  "materials": {
+    "paint_white":  { "color": "#F3F5F7", "metalness": 0.08, "roughness": 0.32, "crease": 0.7 },
+    "paint_grey":   { "color": "#D3D8DD", "metalness": 0.25, "roughness": 0.42, "crease": 0.6 },
+    "livery_navy":  { "color": "#233A50", "metalness": 0.15, "roughness": 0.35, "crease": 0.7 },
+    "metal_light":  { "color": "#C9CED4", "metalness": 0.7,  "roughness": 0.35, "crease": 0.6 },
+    "metal_mid":    { "color": "#8E959C", "metalness": 0.65, "roughness": 0.4,  "crease": 0.6 },
+    "metal_dark":   { "color": "#3C4148", "metalness": 0.6,  "roughness": 0.45, "crease": 0.6 },
+    "metal_gear":   { "color": "#5A6067", "metalness": 0.75, "roughness": 0.4,  "crease": 0.6 },
+    "titanium":     { "color": "#9AA1A8", "metalness": 0.85, "roughness": 0.3,  "crease": 0.5, "doubleSided": true },
+    "rubber":       { "color": "#1C1E21", "metalness": 0.0,  "roughness": 0.9,  "crease": 0.8 },
+    "glass_dark":   { "color": "#1A2633", "metalness": 0.2,  "roughness": 0.08, "crease": 0.6 },
+    "glass_light":  { "color": "#E8EEF2", "metalness": 0.1,  "roughness": 0.1,  "crease": 0.6, "opacity": 0.6 }
+  }
+}

@@ -1,0 +1,656 @@
+[
+  {
+    "section": "Site Overview",
+    "title": "Business summary"
+  },
+  {
+    "section": "Site Overview",
+    "title": "Technical notes (observed, useful for a rebuild)"
+  },
+  {
+    "section": "Site Overview",
+    "title": "Header navigation"
+  },
+  {
+    "section": "Site Overview",
+    "title": "Footer"
+  },
+  {
+    "section": "Site Overview",
+    "title": "Enquiry popup (\"How can help you\" / \"Speak to a Travel Consultant\")"
+  },
+  {
+    "section": "Site Overview",
+    "title": "Full page inventory"
+  },
+  {
+    "section": "Home Page",
+    "title": "Home",
+    "url": "https://nuabtourism.in/",
+    "path": "/",
+    "slug": "nuabtourism.in",
+    "seoTitle": "Affordable Same Day Tour Packages from Delhi | NUAB Tourism",
+    "metaDescription": "Affordable same day & one day tour packages from Delhi to Agra, Jaipur & Mathura. IATA-registered, fixed per-car pricing, expert drivers. Enquire now!",
+    "lastModified": "2026-10-13"
+  },
+  {
+    "section": "About",
+    "title": "About",
+    "url": "https://nuabtourism.in/about/",
+    "path": "/about/",
+    "slug": "about",
+    "seoTitle": "About Nuab Tourism | Tour Operator from Delhi",
+    "metaDescription": "Nuab Tourism is a trusted Delhi-based tour operator offering affordable day trips & tour packages to Agra, Jaipur, Mathura & more. Know our story.",
+    "lastModified": "2026-05-15"
+  },
+  {
+    "section": "Contact Us",
+    "title": "Contact Us",
+    "url": "https://nuabtourism.in/contact-us/",
+    "path": "/contact-us/",
+    "slug": "contact-us",
+    "seoTitle": "Contact Nuab Tourism | Book a Tour from Delhi",
+    "metaDescription": "Contact Nuab Tourism to book your tour package from Delhi. Call, WhatsApp or email us for Agra, Jaipur, Mathura & Golden Triangle tours.",
+    "lastModified": "2026-07-15"
+  },
+  {
+    "section": "Same-Day Tours by Car",
+    "title": "Agra Same Day Tour by Car",
+    "url": "https://nuabtourism.in/agra-same-day-tour-by-car/",
+    "path": "/agra-same-day-tour-by-car/",
+    "slug": "agra-same-day-tour-by-car",
+    "seoTitle": "Taj Mahal Agra Day Trip by Car | NUAB Tourism",
+    "metaDescription": "Take a Taj Mahal day trip by car from Delhi to Agra. Private car tour, fixed pricing & expert drivers with flexible timings. Book your Agra day tour now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Same-Day Tours by Car",
+    "title": "Delhi Darshan One Day Tour by Car",
+    "url": "https://nuabtourism.in/delhi-darshan-one-day-tour-by-car/",
+    "path": "/delhi-darshan-one-day-tour-by-car/",
+    "slug": "delhi-darshan-one-day-tour-by-car",
+    "seoTitle": "Delhi Darshan One Day Tour by Car | NUAB Tourism",
+    "metaDescription": "Book a Delhi Darshan one day tour by car with private sightseeing of top landmarks. Fixed per-car pricing & expert drivers. Reserve your city tour today!",
+    "lastModified": "2026-08-08"
+  },
+  {
+    "section": "Same-Day Tours by Car",
+    "title": "Jaipur Same Day Tour by Car",
+    "url": "https://nuabtourism.in/jaipur-same-day-tour-by-car/",
+    "path": "/jaipur-same-day-tour-by-car/",
+    "slug": "jaipur-same-day-tour-by-car",
+    "seoTitle": "Delhi to Jaipur One Day Car Trip | NUAB Tourism",
+    "metaDescription": "Plan a Delhi to Jaipur one day car trip with private sightseeing. Same day Jaipur tour by car, fixed per-car pricing & expert drivers. Book your trip now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Same-Day Tours by Car",
+    "title": "Mathura Vrindavan Same Day Tour by Car",
+    "url": "https://nuabtourism.in/mathura-vrindavan-same-day-tour-by-car/",
+    "path": "/mathura-vrindavan-same-day-tour-by-car/",
+    "slug": "mathura-vrindavan-same-day-tour-by-car",
+    "seoTitle": "Mathura Vrindavan Same Day Tour by Car from Delhi | Nuab",
+    "metaDescription": "Same day Mathura Vrindavan tour by car from Delhi. Visit Krishna Janmabhoomi, Banke Bihari & Prem Mandir with AC cab, pickup-drop & guide included.",
+    "lastModified": "2026-08-08"
+  },
+  {
+    "section": "Same-Day Tours by Car",
+    "title": "Haridwar & Rishikesh Same Day Tour by Car",
+    "url": "https://nuabtourism.in/haridwar-and-rishikesh-same-day-tour-by-car/",
+    "path": "/haridwar-and-rishikesh-same-day-tour-by-car/",
+    "slug": "haridwar-and-rishikesh-same-day-tour-by-car",
+    "seoTitle": "Haridwar Rishikesh Same Day Tour by Car | NUAB Tourism",
+    "metaDescription": "Delhi to Haridwar & Rishikesh same-day car tour from ₹9500. See Ganga Aarti, Har Ki Pauri & temples in one day. AC car, driver & tolls included. Book now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Same-Day Tours by Bus",
+    "title": "Agra Same Day Tour by Bus",
+    "url": "https://nuabtourism.in/agra-same-day-tour-by-bus/",
+    "path": "/agra-same-day-tour-by-bus/",
+    "slug": "agra-same-day-tour-by-bus",
+    "seoTitle": "Taj Mahal Day Trip by Bus from Delhi | Nuab Tourism",
+    "metaDescription": "Book Taj Mahal day trip by bus from Delhi. Agra same day tour with guide, pickup & drop included. Delhi to Agra bus tour at best price. Book now!",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Same-Day Tours by Bus",
+    "title": "Delhi Darshan One Day Tour by Bus",
+    "url": "https://nuabtourism.in/delhi-darshan-one-day-tour-by-bus/",
+    "path": "/delhi-darshan-one-day-tour-by-bus/",
+    "slug": "delhi-darshan-one-day-tour-by-bus",
+    "seoTitle": "Delhi Darshan One Day Tour by Bus | Nuab Tourism",
+    "metaDescription": "Explore Delhi in a day with our Delhi Darshan one day tour by bus. Affordable one day Delhi tour package with guide & all major landmarks covered.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Same-Day Tours by Bus",
+    "title": "Jaipur Same Day Tour by Bus",
+    "url": "https://nuabtourism.in/jaipur-same-day-tour-by-bus/",
+    "path": "/jaipur-same-day-tour-by-bus/",
+    "slug": "jaipur-same-day-tour-by-bus",
+    "seoTitle": "Jaipur Same Day Tour by Bus from Delhi | Nuab Tourism",
+    "metaDescription": "Book Jaipur same day tour by bus from Delhi. Visit Amber Fort, Hawa Mahal & City Palace. Jaipur day trip by bus with guide at the best price.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Same-Day Tours by Bus",
+    "title": "Mathura Vrindavan Same Day Tour by Bus",
+    "url": "https://nuabtourism.in/mathura-vrindavan-same-day-tour-by-bus/",
+    "path": "/mathura-vrindavan-same-day-tour-by-bus/",
+    "slug": "mathura-vrindavan-same-day-tour-by-bus",
+    "seoTitle": "Mathura Vrindavan Same Day Tour by Bus | Nuab Tourism",
+    "metaDescription": "Book Mathura Vrindavan same day tour by bus from Delhi. Guided day trip to temples & ghats. Mathura Vrindavan tour package at lowest price.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "1 Night 2 Days Mathura Vrindavan",
+    "url": "https://nuabtourism.in/1-night-2-days-mathura-vrindavan/",
+    "path": "/1-night-2-days-mathura-vrindavan/",
+    "slug": "1-night-2-days-mathura-vrindavan",
+    "seoTitle": "Mathura Vrindavan 2 Day Tour | NUAB Tourism",
+    "metaDescription": "Book a Mathura Vrindavan 2 day tour with temple darshan & sightseeing. 1 night 2 days package, fixed per-car pricing & expert drivers. Reserve your trip now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "2 Night 3 Days Agra Mathura",
+    "url": "https://nuabtourism.in/2-night-3-days-agra-mathura/",
+    "path": "/2-night-3-days-agra-mathura/",
+    "slug": "2-night-3-days-agra-mathura",
+    "seoTitle": "2 Night 3 Days Agra Mathura Tour Package | Nuab Tourism",
+    "metaDescription": "Book 2 night 3 days Agra Mathura tour package from Delhi. Visit Taj Mahal, Agra Fort & Mathura Krishna temples. Best price with hotel & transport.",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "3 Days Mathura Vrindavan Tour",
+    "url": "https://nuabtourism.in/3-days-mathura-vrindavan-tour/",
+    "path": "/3-days-mathura-vrindavan-tour/",
+    "slug": "3-days-mathura-vrindavan-tour",
+    "seoTitle": "3 Days Mathura Vrindavan Tour | NUAB Tourism",
+    "metaDescription": "Discover a 3 days Mathura Vrindavan tour covering top temples & ghats. Private car, fixed pricing & expert drivers on this 3 day package. Book online today!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "2 Night 3 Days Mathura Pilgrimage",
+    "url": "https://nuabtourism.in/2-night-3-days-mathura-pilgrimage/",
+    "path": "/2-night-3-days-mathura-pilgrimage/",
+    "slug": "2-night-3-days-mathura-pilgrimage",
+    "seoTitle": "Mathura Pilgrimage Tour Package | NUAB Tourism",
+    "metaDescription": "Book a 2 night 3 days Mathura pilgrimage tour package covering Krishna Janmabhoomi & Vrindavan. Fixed per-car pricing & expert drivers. Plan your weekend now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "3 Days Mathura Govardhan Agra",
+    "url": "https://nuabtourism.in/3-days-mathura-govardhan-agra/",
+    "path": "/3-days-mathura-govardhan-agra/",
+    "slug": "3-days-mathura-govardhan-agra",
+    "seoTitle": "3 Days Mathura Govardhan Agra Tour | NUAB Tourism",
+    "metaDescription": "Book the 3 days Mathura Govardhan Agra tour package with temple visits & the Taj Mahal. Private car, fixed pricing & expert drivers. Reserve your trip now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "6 Days Mathura Agra Haridwar Tour",
+    "url": "https://nuabtourism.in/6-days-mathura-agra-haridwar-tour/",
+    "path": "/6-days-mathura-agra-haridwar-tour/",
+    "slug": "6-days-mathura-agra-haridwar-tour",
+    "seoTitle": "Ganga Aarti Haridwar Tour | NUAB Tourism",
+    "metaDescription": "Experience the Ganga Aarti Haridwar tour on a 6 days Mathura, Agra & Haridwar package. Private car, fixed pricing & expert drivers. Book your pilgrimage now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Golden Triangle & Multi-Day Pilgrimage Packages",
+    "title": "6 Days Delhi Jaipur Agra Mathura",
+    "url": "https://nuabtourism.in/6-days-delhi-jaipur-agra-mathura/",
+    "path": "/6-days-delhi-jaipur-agra-mathura/",
+    "slug": "6-days-delhi-jaipur-agra-mathura",
+    "seoTitle": "6 Days Golden Triangle Tour India | NUAB Tourism",
+    "metaDescription": "Explore our 6 days Golden Triangle tour covering Delhi, Jaipur, Agra & Mathura. Private AC car, fixed pricing & expert drivers. Book your India package now!",
+    "lastModified": "2026-07-16"
+  },
+  {
+    "section": "Outstation Cabs",
+    "title": "Delhi to Himachal Cabs",
+    "url": "https://nuabtourism.in/delhi-to-himachal-cabs/",
+    "path": "/delhi-to-himachal-cabs/",
+    "slug": "delhi-to-himachal-cabs",
+    "seoTitle": "Delhi to Himachal Cabs | NUAB Tourism",
+    "metaDescription": "Book a Haridwar Rishikesh same day tour by car from Delhi with Ganga Aarti. One day trip, fixed per-car pricing & expert drivers. Reserve your taxi today!",
+    "lastModified": "2026-08-19"
+  },
+  {
+    "section": "Outstation Cabs",
+    "title": "Delhi to Uttarakhand Cabs",
+    "url": "https://nuabtourism.in/delhi-to-uttarakhand-cabs/",
+    "path": "/delhi-to-uttarakhand-cabs/",
+    "slug": "delhi-to-uttarakhand-cabs",
+    "seoTitle": "Delhi to Uttarakhand Cabs | NUAB Tourism",
+    "metaDescription": "Book Delhi to Uttarakhand cabs for Dehradun, Nainital & Mussoorie. Outstation taxi with fixed per-car pricing & expert drivers. Reserve your cab online now!",
+    "lastModified": "2026-06-03"
+  },
+  {
+    "section": "Outstation Cabs",
+    "title": "Delhi to Vaishno Devi Cabs",
+    "url": "https://nuabtourism.in/delhi-to-vaishno-devi-cabs/",
+    "path": "/delhi-to-vaishno-devi-cabs/",
+    "slug": "delhi-to-vaishno-devi-cabs",
+    "seoTitle": "Delhi to Vaishno Devi Cabs @₹10/KM | Jammu, Katra Taxi",
+    "metaDescription": "Book Delhi to Vaishno Devi cabs from ₹10/km — Jammu, Katra & Mata Vaishno Devi yatra. 24×7 outstation taxi, one-way or round trip. Book on WhatsApp anytime.",
+    "lastModified": "2026-06-03"
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Dubai Package (landing page)",
+    "url": "https://nuabtourism.in/dubai-package/",
+    "path": "/dubai-package/",
+    "slug": "dubai-package",
+    "seoTitle": "Dubai Tour Packages from India | Dubai Holiday Packages",
+    "metaDescription": "Plan your Dubai vacation with Nuab Tourism's luxury tour packages from India. Best deals on flights, hotels, desert safari & guided city tours. Book now!",
+    "lastModified": "2026-08-08"
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Amazing Dubai & Abu Dhabi",
+    "url": "https://nuabtourism.in/packages/amazing-dubai-abu-dhabi/",
+    "path": "/packages/amazing-dubai-abu-dhabi/",
+    "slug": "amazing-dubai-abu-dhabi",
+    "seoTitle": "Dubai Abu Dhabi Family Package | Amazing UAE Tour",
+    "metaDescription": "Enjoy our amazing Dubai Abu Dhabi family package with city tours, theme parks & desert safari. Plan your UAE family trip from India by Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Atlantis Fun Filled Moments",
+    "url": "https://nuabtourism.in/packages/atlantis-fun-filled-moments/",
+    "path": "/packages/atlantis-fun-filled-moments/",
+    "slug": "atlantis-fun-filled-moments",
+    "seoTitle": "Atlantis Dubai – Fun-Filled Family Package | Nuab Tourism",
+    "metaDescription": "Stay at Atlantis The Palm Dubai with our fun-filled family package. Aquaventure waterpark, dolphin encounters and ultra-luxury rooms. Book today."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Bollywood Experience In Dubai",
+    "url": "https://nuabtourism.in/packages/bollywood-experience-in-dubai/",
+    "path": "/packages/bollywood-experience-in-dubai/",
+    "slug": "bollywood-experience-in-dubai",
+    "seoTitle": "Bollywood Park Dubai Tour | Bollywood Experience UAE",
+    "metaDescription": "Live the Bollywood experience in Dubai with our Bollywood Park tour, themed attractions & sightseeing. Book your Dubai trip with Nuab Tourism today."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Breathtaking Ras Al Khaimah",
+    "url": "https://nuabtourism.in/packages/breathtaking-ras-al-khaimah/",
+    "path": "/packages/breathtaking-ras-al-khaimah/",
+    "slug": "breathtaking-ras-al-khaimah",
+    "seoTitle": "Ras Al Khaimah Tour Package | Breathtaking UAE Trip",
+    "metaDescription": "Discover our breathtaking Ras Al Khaimah tour package with mountains, beaches & adventure. Book your Ras Al Khaimah trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Discover Abu Dhabi & Yas Islands",
+    "url": "https://nuabtourism.in/packages/discover-abu-dhabi-yas-islands/",
+    "path": "/packages/discover-abu-dhabi-yas-islands/",
+    "slug": "discover-abu-dhabi-yas-islands",
+    "seoTitle": "Abu Dhabi Yas Island Tour Package | Nuab Tourism",
+    "metaDescription": "Explore our Abu Dhabi Yas Island tour package with Ferrari World, Sheikh Zayed Mosque & theme parks. Book your UAE trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Discover Dubai",
+    "url": "https://nuabtourism.in/packages/discover-dubai/",
+    "path": "/packages/discover-dubai/",
+    "slug": "discover-dubai",
+    "seoTitle": "Dubai Sightseeing Tour | Discover Dubai Trip | Nuab Tourism",
+    "metaDescription": "Discover our Dubai sightseeing tour with city tours, desert safari & Burj Khalifa visit. Book your Dubai sightseeing trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Discover Sharjah",
+    "url": "https://nuabtourism.in/packages/discover-sharjah/",
+    "path": "/packages/discover-sharjah/",
+    "slug": "discover-sharjah",
+    "seoTitle": "Sharjah Tour Package | Discover Sharjah | Nuab Tourism",
+    "metaDescription": "Discover our Sharjah tour package with cultural attractions, museums & beaches. Plan your UAE Sharjah trip from India with Nuab Tourism. Book now!"
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Dubai Explorer",
+    "url": "https://nuabtourism.in/packages/dubai-explorer/",
+    "path": "/packages/dubai-explorer/",
+    "slug": "dubai-explorer",
+    "seoTitle": "Dubai City Tour Package | Dubai Explorer Trip | Nuab",
+    "metaDescription": "Book our Dubai city tour package with desert safari, Burj Khalifa & city sightseeing. Explore Dubai's top attractions with Nuab Tourism's explorer trip."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Dubai Honeymoon Delight",
+    "url": "https://nuabtourism.in/packages/dubai-honeymoon-delight/",
+    "path": "/packages/dubai-honeymoon-delight/",
+    "slug": "dubai-honeymoon-delight",
+    "seoTitle": "Dubai Honeymoon Package | Honeymoon Delight | Nuab Tourism",
+    "metaDescription": "Plan your romantic Dubai honeymoon package with luxury hotels, dhow cruise & desert safari. Best Dubai honeymoon trips from India by Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Dubai With Sea Plane",
+    "url": "https://nuabtourism.in/packages/dubai-with-sea-plane/",
+    "path": "/packages/dubai-with-sea-plane/",
+    "slug": "dubai-with-sea-plane",
+    "seoTitle": "Dubai Sea Plane Tour | Aerial Dubai Experience | Nuab",
+    "metaDescription": "Experience our Dubai sea plane tour with aerial city views, hotels & sightseeing. Book your Dubai sea plane trip from India with Nuab Tourism today."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Explore Ras Al Khaimah",
+    "url": "https://nuabtourism.in/packages/explore-ras-al-khaimah/",
+    "path": "/packages/explore-ras-al-khaimah/",
+    "slug": "explore-ras-al-khaimah",
+    "seoTitle": "Explore Ras Al Khaimah Tour Package – UAE Holiday | Nuab",
+    "metaDescription": "Discover Ras Al Khaimah with our curated UAE tour package. Desert safaris, beaches, Jebel Jais zipline and luxury stays — all in one seamless trip."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Glittering Dubai",
+    "url": "https://nuabtourism.in/packages/glittering-dubai/",
+    "path": "/packages/glittering-dubai/",
+    "slug": "glittering-dubai",
+    "seoTitle": "Glittering Dubai Tour Package – UAE Holiday Deal | Nuab",
+    "metaDescription": "See the glittering side of Dubai with our complete UAE tour package. Burj Khalifa, desert safari, dhow cruise and luxury hotels — all in one trip."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Luxury Dubai",
+    "url": "https://nuabtourism.in/packages/luxury-dubai/",
+    "path": "/packages/luxury-dubai/",
+    "slug": "luxury-dubai",
+    "seoTitle": "LUXURY DUBAI - Nuab Tourism"
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Mesmerizing Dubai & Abu Dhabi",
+    "url": "https://nuabtourism.in/packages/mesmerizing-dubai-abu-dhabi/",
+    "path": "/packages/mesmerizing-dubai-abu-dhabi/",
+    "slug": "mesmerizing-dubai-abu-dhabi",
+    "seoTitle": "Dubai Abu Dhabi Combo Tour | Mesmerizing UAE Trip",
+    "metaDescription": "Book our mesmerizing Dubai Abu Dhabi combo tour with Burj Khalifa, Ferrari World & desert safari. Plan your UAE trip from India by Nuab Tourism."
+  },
+  {
+    "section": "Dubai Packages",
+    "title": "Ultimate Water Sports Package",
+    "url": "https://nuabtourism.in/packages/ultimate-water-sports-package/",
+    "path": "/packages/ultimate-water-sports-package/",
+    "slug": "ultimate-water-sports-package",
+    "seoTitle": "Ultimate Water Sports Package – Adventure Holiday | Nuab",
+    "metaDescription": "The ultimate water sports holiday — jet ski, parasailing, scuba and more. An adrenaline-packed adventure tour with stays, transfers and expert guides."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Thailand Package (landing page)",
+    "url": "https://nuabtourism.in/thailand-package/",
+    "path": "/thailand-package/",
+    "slug": "thailand-package",
+    "seoTitle": "Thailand Tour Packages from India | Bangkok Pattaya Phuket",
+    "metaDescription": "Plan your dream Thailand vacation with Nuab Tourism. Bangkok Pattaya Phuket packages from India at best prices. Customised itineraries & 24/7 support.",
+    "lastModified": "2026-08-19"
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Amazing Northern Highlight",
+    "url": "https://nuabtourism.in/packages/amazing-northern-highlight/",
+    "path": "/packages/amazing-northern-highlight/",
+    "slug": "amazing-northern-highlight",
+    "seoTitle": "Amazing Northern India Highlights Tour | Nuab Tourism",
+    "metaDescription": "Explore the best of North India with the Amazing Northern Highlights tour. Snow-capped peaks, royal cities and unforgettable experiences in one trip."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Best Of Bangkok, Pattaya & Phuket",
+    "url": "https://nuabtourism.in/packages/best-of-bangkok-pattaya-phuket/",
+    "path": "/packages/best-of-bangkok-pattaya-phuket/",
+    "slug": "best-of-bangkok-pattaya-phuket",
+    "seoTitle": "Bangkok Pattaya Phuket Trip | Best of Thailand Combo Tour",
+    "metaDescription": "Book the best Bangkok Pattaya Phuket trip with hotels, sightseeing & transfers across Thailand's top three cities. Plan your trip with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Captivating Bangkok & Pattaya",
+    "url": "https://nuabtourism.in/packages/captivating-bangkok-pattaya/",
+    "path": "/packages/captivating-bangkok-pattaya/",
+    "slug": "captivating-bangkok-pattaya",
+    "seoTitle": "Bangkok Pattaya Holiday Trip | Captivating Thailand Tour",
+    "metaDescription": "Plan a captivating Bangkok Pattaya holiday trip with hotels, transfers & top attractions. Affordable Bangkok Pattaya packages from India by Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Discover The Southern",
+    "url": "https://nuabtourism.in/packages/discover-the-southern/",
+    "path": "/packages/discover-the-southern/",
+    "slug": "discover-the-southern",
+    "seoTitle": "Southern Thailand Tour Package | Discover the South",
+    "metaDescription": "Discover our Southern Thailand tour package covering Phuket, Krabi & Phi Phi. Explore beaches, islands & nightlife with Nuab Tourism's South Thailand trip."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Exotic Phuket",
+    "url": "https://nuabtourism.in/packages/exotic-phuket/",
+    "path": "/packages/exotic-phuket/",
+    "slug": "exotic-phuket",
+    "seoTitle": "Phuket Tour Package | Exotic Phuket Trip | Nuab Tourism",
+    "metaDescription": "Book our exotic Phuket tour package with Phi Phi Island, James Bond Island & beaches. Plan your Phuket beach trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Full Moon Party – Koh Samui",
+    "url": "https://nuabtourism.in/packages/full-moon-party-koh-samui/",
+    "path": "/packages/full-moon-party-koh-samui/",
+    "slug": "full-moon-party-koh-samui",
+    "seoTitle": "Full Moon Party Koh Samui Package | Thailand Party Tour",
+    "metaDescription": "Join the iconic Full Moon Party Koh Samui package with beach raves, music & nightlife. Book your Koh Samui party trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Magical Bangkok & Pattaya",
+    "url": "https://nuabtourism.in/packages/magical-bangkok-pattaya/",
+    "path": "/packages/magical-bangkok-pattaya/",
+    "slug": "magical-bangkok-pattaya",
+    "seoTitle": "Magical Bangkok Pattaya Tour Package | Nuab Tourism",
+    "metaDescription": "Discover our magical Bangkok Pattaya tour package with city tours, Coral Island & Alcazar Show. Book your Thailand trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Magical Koh Samui",
+    "url": "https://nuabtourism.in/packages/magical-koh-samui/",
+    "path": "/packages/magical-koh-samui/",
+    "slug": "magical-koh-samui",
+    "seoTitle": "Koh Samui Tour Package | Magical Koh Samui | Nuab Tourism",
+    "metaDescription": "Explore our Koh Samui tour package with stunning beaches, island hopping & beach resorts. Book your Koh Samui island holiday from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Mesmerizing Hua Hin & Bangkok",
+    "url": "https://nuabtourism.in/packages/mesmerizing-hua-hin-bangkok/",
+    "path": "/packages/mesmerizing-hua-hin-bangkok/",
+    "slug": "mesmerizing-hua-hin-bangkok",
+    "seoTitle": "Hua Hin Bangkok Tour Package | Mesmerizing Thailand Trip",
+    "metaDescription": "Experience our mesmerizing Hua Hin Bangkok tour package with beaches, royal palaces & city tours. Plan your Hua Hin trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Mesmerizing Phuket & Krabi",
+    "url": "https://nuabtourism.in/packages/mesmerizing-phuket-krabi/",
+    "path": "/packages/mesmerizing-phuket-krabi/",
+    "slug": "mesmerizing-phuket-krabi",
+    "seoTitle": "Phuket Krabi Tour Package | Mesmerizing Thailand Trip",
+    "metaDescription": "Enjoy our mesmerizing Phuket Krabi tour package with island hopping, beaches & adventure. Book your Phuket Krabi trip from India with Nuab Tourism."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Pattaya Fiesta",
+    "url": "https://nuabtourism.in/packages/pattaya-fiesta/",
+    "path": "/packages/pattaya-fiesta/",
+    "slug": "pattaya-fiesta",
+    "seoTitle": "Pattaya Fiesta – Thailand Tour Package from India | Nuab",
+    "metaDescription": "Pattaya Fiesta tour package from India. Coral Island, Walking Street, Tiffany Show and Alcazar. Stays, sightseeing and transfers — book online today."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Short Romantic Getaway To Krabi",
+    "url": "https://nuabtourism.in/packages/short-romantic-getaway-to-krabi/",
+    "path": "/packages/short-romantic-getaway-to-krabi/",
+    "slug": "short-romantic-getaway-to-krabi",
+    "seoTitle": "Romantic Krabi Getaway – Thailand Honeymoon Package | Nuab",
+    "metaDescription": "A short romantic Krabi getaway for couples. Pristine beaches, island hopping and luxury Thailand resort stays. Honeymoon package with flights included."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Soulmate Special",
+    "url": "https://nuabtourism.in/packages/soulmate-special/",
+    "path": "/packages/soulmate-special/",
+    "slug": "soulmate-special",
+    "seoTitle": "Soulmate Special – Romantic Honeymoon Package | Nuab",
+    "metaDescription": "Celebrate love with the Soulmate Special honeymoon package. Curated romantic stays, private experiences and seamless trip planning for couples."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Splendid Thailand",
+    "url": "https://nuabtourism.in/packages/splendid-thailand/",
+    "path": "/packages/splendid-thailand/",
+    "slug": "splendid-thailand",
+    "seoTitle": "Thailand Multi City Tour | Splendid Thailand | Nuab Tourism",
+    "metaDescription": "Book our splendid Thailand multi city tour covering Bangkok, Pattaya & Phuket. Plan your Thailand trip from India with hotels, transfers & sightseeing."
+  },
+  {
+    "section": "Thailand Packages",
+    "title": "Wonderful Chiang Mai & Bangkok",
+    "url": "https://nuabtourism.in/packages/wonderful-chiang-mai-bangkok/",
+    "path": "/packages/wonderful-chiang-mai-bangkok/",
+    "slug": "wonderful-chiang-mai-bangkok",
+    "seoTitle": "Wonderful Chiang Mai & Bangkok Thailand Tour | Nuab Tourism",
+    "metaDescription": "Experience the wonders of Thailand with our Chiang Mai & Bangkok tour. Temples, elephant sanctuaries, shopping and nightlife — all included. Book now."
+  },
+  {
+    "section": "Bike Trips",
+    "title": "Gallery",
+    "url": "https://nuabtourism.in/gallery/",
+    "path": "/gallery/",
+    "slug": "gallery",
+    "seoTitle": "Gallery - Nuab Tourism",
+    "lastModified": "2026-07-22"
+  },
+  {
+    "section": "Bike Trips",
+    "title": "Equipment & Safety Gear",
+    "url": "https://nuabtourism.in/equipment-safety-gear/",
+    "path": "/equipment-safety-gear/",
+    "slug": "equipment-safety-gear",
+    "seoTitle": "Equipment & Safety Gear - Nuab Tourism",
+    "lastModified": "2026-07-22"
+  },
+  {
+    "section": "Bike Trips",
+    "title": "Destinations",
+    "url": "https://nuabtourism.in/destinations/",
+    "path": "/destinations/",
+    "slug": "destinations",
+    "seoTitle": "Destinations - Nuab Tourism",
+    "lastModified": "2026-07-22"
+  },
+  {
+    "section": "Blog",
+    "title": "Blog listing page",
+    "url": "https://nuabtourism.in/blogs/",
+    "path": "/blogs/",
+    "slug": "blogs",
+    "seoTitle": "Travel Blog – Tips, Itineraries & Guides | Nuab Tourism",
+    "metaDescription": "Explore travel tips, ready-made itineraries and destination guides from Nuab Tourism. Plan smarter trips across India, Dubai, Thailand and beyond.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Blog",
+    "title": "Delhi to Uttarakhand Road Trip: Char Dham & Hill Station Guide",
+    "url": "https://nuabtourism.in/delhi-to-uttarakhand-road-trip-char-dham-hill-station-guide/",
+    "path": "/delhi-to-uttarakhand-road-trip-char-dham-hill-station-guide/",
+    "slug": "delhi-to-uttarakhand-road-trip-char-dham-hill-station-guide",
+    "seoTitle": "Delhi to Uttarakhand Road Trip: Char Dham & Hill Station Guide",
+    "metaDescription": "Plan the perfect Delhi to Uttarakhand road trip. Explore Char Dham Yatra, scenic hill stations, travel routes, tips, and tour packages.",
+    "lastModified": "2026-06-23"
+  },
+  {
+    "section": "Blog",
+    "title": "One-Day Agra Tour from Delhi – Complete Itinerary",
+    "url": "https://nuabtourism.in/one-day-agra-tour-from-delhi-complete-itinerary/",
+    "path": "/one-day-agra-tour-from-delhi-complete-itinerary/",
+    "slug": "one-day-agra-tour-from-delhi-complete-itinerary",
+    "seoTitle": "One-Day Agra Tour from Delhi – Full Itinerary",
+    "metaDescription": "Plan the perfect one-day Agra tour from Delhi with Taj Mahal, Agra Fort, travel tips, sightseeing, and comfortable travel by Nuab Tourism.",
+    "lastModified": "2026-05-26"
+  },
+  {
+    "section": "Blog",
+    "title": "What Is the Golden Triangle Tour in India? Complete Guide for First-Time Travelers",
+    "url": "https://nuabtourism.in/what-is-the-golden-triangle-tour-in-india-complete-guide-for-first-time-travelers/",
+    "path": "/what-is-the-golden-triangle-tour-in-india-complete-guide-for-first-time-travelers/",
+    "slug": "what-is-the-golden-triangle-tour-in-india-complete-guide-for-first-time-travelers",
+    "seoTitle": "Golden Triangle Tour India Guide for First-Time Travelers",
+    "metaDescription": "Explore Delhi, Agra & Jaipur with this Golden Triangle Tour India guide. Discover top attractions, travel tips, and best tour options.",
+    "lastModified": "2026-05-13"
+  },
+  {
+    "section": "Blog",
+    "title": "16 Places to Visit in Mathura Vrindavan in 2026",
+    "url": "https://nuabtourism.in/16-places-to-visit-in-mathura-vrindavan-in-2026/",
+    "path": "/16-places-to-visit-in-mathura-vrindavan-in-2026/",
+    "slug": "16-places-to-visit-in-mathura-vrindavan-in-2026",
+    "seoTitle": "16 Best Places to Visit in Mathura Vrindavan 2026",
+    "metaDescription": "Explore 16 best places to visit in Mathura Vrindavan in 2026. Discover temples, ghats, travel tips & tour packages with Nuab Tourism.",
+    "lastModified": "2026-05-01"
+  },
+  {
+    "section": "Blog",
+    "title": "Jaipur – Tourist Places & Top Things to Do in 2026",
+    "url": "https://nuabtourism.in/jaipur-tourist-places-top-things-to-do-in-2026/",
+    "path": "/jaipur-tourist-places-top-things-to-do-in-2026/",
+    "slug": "jaipur-tourist-places-top-things-to-do-in-2026",
+    "seoTitle": "Jaipur Tourist Places & Things to Do 2026 Guide",
+    "metaDescription": "Explore Jaipur tourist places and top things to do in 2026. Discover forts, markets, food, travel tips, and best tour options for your trip.",
+    "lastModified": "2026-05-01"
+  },
+  {
+    "section": "Other Pages",
+    "title": "Privacy Policy",
+    "url": "https://nuabtourism.in/privacy-policy/",
+    "path": "/privacy-policy/",
+    "slug": "privacy-policy",
+    "seoTitle": "Privacy Policy – How We Protect Your Data | Nuab Tourism",
+    "metaDescription": "Read the Nuab Tourism privacy policy. Learn how we collect, use and safeguard your personal information when you book tours or browse our site.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Other Pages",
+    "title": "thank you",
+    "url": "https://nuabtourism.in/thank-you/",
+    "path": "/thank-you/",
+    "slug": "thank-you",
+    "seoTitle": "Thank You – Booking Enquiry Received | Nuab Tourism",
+    "metaDescription": "Thanks for choosing Nuab Tourism! Your enquiry has been received. Our travel expert will contact you shortly to confirm your itinerary and pricing.",
+    "lastModified": "2026-05-20"
+  },
+  {
+    "section": "Other Pages",
+    "title": "Sitemap page",
+    "url": "https://nuabtourism.in/sitemap/",
+    "path": "/sitemap/",
+    "slug": "sitemap",
+    "seoTitle": "Sitemap – All Tour Packages & Pages | Nuab Tourism",
+    "metaDescription": "Browse the full Nuab Tourism sitemap. Find every tour package, day trip, destination guide and helpful page on our site in one organised list.",
+    "lastModified": "2026-05-11"
+  },
+  {
+    "section": "Other Pages",
+    "title": "Country archive pages"
+  }
+]
