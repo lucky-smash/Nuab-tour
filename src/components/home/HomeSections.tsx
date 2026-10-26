@@ -47,10 +47,10 @@ export function FeaturedTours() {
             <h3 id="bus" className="mt-12 flex items-baseline justify-between border-b border-navy pb-3 font-sans text-sm font-semibold uppercase tracking-[0.14em] text-navy">
               Same-day by coach <span className="font-mono text-[0.68rem] font-normal tracking-[0.1em] text-muted">fare per seat</span>
             </h3>
-            <ul className="grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+            <ul className="tile-grid tile-grid-tight mt-5 grid-cols-2 sm:grid-cols-4">
               {busTours.map((t) => (
-                <li key={t.slug} className="bg-white">
-                  <Link href={t.path} className="block h-full p-4 hover:bg-mist">
+                <li key={t.slug} className="tile tile-link">
+                  <Link href={t.path} className="block h-full px-4 py-4">
                     <span className="block text-[0.9rem] font-semibold text-navy">{t.title.replace(/ (Same Day|One Day) Tour by Bus$/, "")}</span>
                     <span className="mt-1 block text-[0.85rem]">from {formatINR(t.fromPrice)}</span>
                   </Link>
@@ -116,31 +116,31 @@ export function International() {
             <p className="mt-5 max-w-xl text-lede text-white/75">{intlLandings.dubai.aboutParas[2]}</p>
             <p className="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-white/50">Flights are not sold or tracked on this site · durations as published</p>
           </div>
-          <div className="bg-white p-3 text-ink shadow-[0_40px_80px_-40px_rgb(0_0_0/.6)]"><WorldRoutes /></div>
+          <div className="border border-white/20 bg-white p-3 text-ink"><WorldRoutes /></div>
         </div>
 
-        <div className="mt-16 grid gap-px bg-white/10 text-ink md:grid-cols-2">
+        <div className="tile-grid mt-16 md:grid-cols-2">
           {groups.map((g) => (
-            <article key={g.c} className="flex flex-col bg-white">
+            <article key={g.c} className="tile tile-dark">
               {g.hero && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={g.hero} alt={g.c === "dubai" ? "Dubai skyline with the Burj Khalifa" : "Thai temple at sunset"} loading="lazy" className="aspect-[16/7] w-full object-cover" />
+                <img src={g.hero} alt={g.c === "dubai" ? "Dubai skyline with the Burj Khalifa" : "Thai temple at sunset"} loading="lazy" className="tile-media aspect-[16/7]" />
               )}
-              <div className="flex flex-1 flex-col p-6 md:p-8">
-                <p className="coord">{g.c === "dubai" ? "25°12′ N · 55°16′ E — UNITED ARAB EMIRATES" : "13°45′ N · 100°30′ E — THAILAND"}</p>
-                <h3 className="mt-2 text-display-sm">{g.c === "dubai" ? "Dubai & the Emirates" : "Thailand"}</h3>
-                <p className="mt-1 text-sm text-muted">{g.pkgs.length} itineraries · prices on enquiry</p>
-                <ul className="mt-5 divide-y divide-line border-y border-line">
+              <div className="tile-body tile-body-lg">
+                <p className="coord !text-sand">{g.c === "dubai" ? "25°12′ N · 55°16′ E — UNITED ARAB EMIRATES" : "13°45′ N · 100°30′ E — THAILAND"}</p>
+                <h3 className="mt-2 text-display-sm !text-white">{g.c === "dubai" ? "Dubai & the Emirates" : "Thailand"}</h3>
+                <p className="mt-1 text-sm text-white/60">{g.pkgs.length} itineraries · prices on enquiry</p>
+                <ul className="mt-5 divide-y divide-white/15 border-y border-white/15">
                   {g.pkgs.slice(0, 6).map((p) => (
                     <li key={p.slug}>
-                      <Link href={p.path} className="flex items-baseline justify-between gap-3 py-2.5 text-[0.92rem] hover:text-navy">
-                        <span className="font-semibold text-navy">{p.title}</span>
-                        <span className="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-muted">{p.duration}</span>
+                      <Link href={p.path} className="group/pk flex items-baseline justify-between gap-3 py-2.5 text-[0.92rem]">
+                        <span className="font-semibold text-white group-hover/pk:underline group-hover/pk:underline-offset-4">{p.title}</span>
+                        <span className="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-white/55">{p.duration}</span>
                       </Link>
                     </li>
                   ))}
                 </ul>
-                <Link href={g.c === "dubai" ? "/dubai-package/" : "/thailand-package/"} className="mt-6 inline-flex items-center gap-2 self-start font-semibold text-navy link-underline">
+                <Link href={g.c === "dubai" ? "/dubai-package/" : "/thailand-package/"} className="tile-cta inline-flex items-center gap-2 self-start font-semibold text-white link-underline">
                   All {g.pkgs.length} {g.c === "dubai" ? "Dubai" : "Thailand"} packages <ArrowRight className="size-4" aria-hidden />
                 </Link>
               </div>
@@ -213,9 +213,9 @@ export function Company() {
           </div>
         </div>
 
-        <ol className="mt-20 grid gap-px bg-line md:grid-cols-3">
+        <ol className="tile-grid mt-20 md:grid-cols-3">
           {home.whyBook.map((w, i) => (
-            <li key={w.title} className="bg-white p-6 md:p-8">
+            <li key={w.title} className="tile p-6 md:p-8">
               <span className="font-mono text-[0.7rem] text-stone">0{i + 1}</span>
               <h3 className="mt-3 font-display text-2xl">{w.title}</h3>
               <p className="mt-3 text-[0.95rem] leading-relaxed text-ink/75">{w.text}</p>
@@ -223,11 +223,11 @@ export function Company() {
           ))}
         </ol>
 
-        <ul className="mt-px grid grid-cols-2 gap-px bg-line md:grid-cols-4">
+        <ul className="tile-grid tile-grid-tight mt-6 grid-cols-2 md:grid-cols-4">
           {home.trust.map((t) => {
             const Icon = TRUST_ICONS[t.icon as keyof typeof TRUST_ICONS] ?? Star;
             return (
-              <li key={t.label} className="flex items-center gap-3 bg-mist p-5">
+              <li key={t.label} className="tile !flex-row items-center gap-3 p-5">
                 <Icon className="size-5 shrink-0 text-navy" aria-hidden />
                 <span className="text-[0.9rem] font-medium text-ink">{t.label}</span>
               </li>

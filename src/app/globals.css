@@ -212,3 +212,20 @@ a.pill:hover, button.pill:hover { border-color: var(--color-navy); background: v
 /* MapLibre restyle hooks */
 .maplibregl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px !important; background: rgb(255 255 255 / .8) !important; }
 .maplibregl-ctrl-group { border-radius: 2px !important; box-shadow: none !important; border: 1px solid var(--color-line); }
+
+/* Tiles — open, hairline-bordered blocks with generous, even gaps. No fills and no shadows, so they read
+   as part of the page rather than floating cards. Tiles in a row share one height, and a closing link
+   (.tile-cta) is pinned to the bottom so the links line up across the row. */
+.tile-grid { display: grid; gap: 1.5rem; align-items: stretch; }
+@media (min-width: 768px) { .tile-grid { gap: 2rem; } }
+.tile-grid.tile-grid-tight { gap: 0.875rem; }
+@media (min-width: 768px) { .tile-grid.tile-grid-tight { gap: 1rem 1.25rem; } }
+.tile { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--color-line); background: transparent; transition: border-color .3s var(--ease-atlas); }
+.tile-media { display: block; width: 100%; border-bottom: 1px solid var(--color-line); object-fit: cover; }
+.tile-body { display: flex; flex: 1; flex-direction: column; padding: 1.5rem; }
+@media (min-width: 1024px) { .tile-body.tile-body-lg { padding: 2rem; } }
+.tile-cta { margin-top: auto; padding-top: 1.25rem; }
+.tile-link:hover, .tile-link:focus-within { border-color: rgb(35 58 80 / .5); }
+.tile-dark { border-color: rgb(255 255 255 / .18); }
+.tile-dark .tile-media { border-color: rgb(255 255 255 / .18); }
+.tile-dark.tile-link:hover, .tile-dark.tile-link:focus-within { border-color: rgb(255 255 255 / .5); }

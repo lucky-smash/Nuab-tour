@@ -27,21 +27,21 @@ export default function AboutPage() {
         </div>
       </Section>
       <Section tone="mist">
-        <div className="grid gap-px bg-line md:grid-cols-2">
-          <article className="bg-white p-8">
+        <div className="tile-grid md:grid-cols-2">
+          <article className="tile p-8">
             <p className="eyebrow">Our mission</p>
             <p className="mt-4 font-display text-2xl leading-snug text-navy">{about.mission}</p>
           </article>
-          <article className="bg-white p-8">
+          <article className="tile p-8">
             <p className="eyebrow">Our vision</p>
             <p className="mt-4 font-display text-2xl leading-snug text-navy">{about.vision}</p>
           </article>
         </div>
       </Section>
       <Section eyebrow="Why book with NUAB Tourism" title="How we work">
-        <ol className="grid gap-px bg-line md:grid-cols-3">
+        <ol className="tile-grid md:grid-cols-3">
           {home.whyBook.map((w, i) => (
-            <li key={w.title} className="bg-white p-6">
+            <li key={w.title} className="tile p-6">
               <span className="font-mono text-[0.7rem] text-stone">0{i + 1}</span>
               <h3 className="mt-3 font-display text-xl">{w.title}</h3>
               <p className="mt-3 text-[0.95rem] text-ink/75">{w.text}</p>

@@ -40,7 +40,7 @@ export function IntlLandingPage({ country }: { country: "dubai" | "thailand" }) 
         <p className="mt-6 font-mono text-[0.64rem] uppercase tracking-[0.12em] text-muted">Prices are quoted on enquiry for your dates · airfare and visa fees are not included unless stated</p>
       </Section>
       <Section id="packages" tone="mist" eyebrow={`${pkgs.length} itineraries`} title={`${C.name} packages`}>
-        <ul className="grid gap-px bg-line md:grid-cols-2 xl:grid-cols-3">
+        <ul className="tile-grid md:grid-cols-2 xl:grid-cols-3">
           {byDuration.map((p) => <PackageCard key={p.slug} p={p} />)}
         </ul>
       </Section>
@@ -53,19 +53,19 @@ export function IntlLandingPage({ country }: { country: "dubai" | "thailand" }) 
 
 function PackageCard({ p }: { p: IntlPackage }) {
   return (
-    <li className="flex flex-col bg-white">
+    <li className="tile tile-link">
       <Link href={p.path} className="group flex h-full flex-col">
         {p.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.image} alt={p.title} loading="lazy" className="aspect-[16/9] w-full object-cover" />
+          <img src={p.image} alt={p.title} loading="lazy" className="tile-media aspect-[16/9]" />
         ) : (
-          <div className="flex aspect-[16/9] w-full items-center justify-center bg-powder/50 font-display text-2xl italic text-navy/60">{p.places.join(" · ")}</div>
+          <div className="flex aspect-[16/9] w-full items-center justify-center border-b border-line bg-powder/40 font-display text-2xl italic text-navy/60">{p.places.join(" · ")}</div>
         )}
-        <div className="flex flex-1 flex-col p-5">
+        <div className="tile-body">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-stone">{p.duration ?? `${p.days} days`}</p>
           <h3 className="mt-1 font-display text-[1.35rem] text-navy group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">{p.title}</h3>
           <p className="mt-2 text-sm text-muted">{p.places.join(" · ")}</p>
-          <span className="mt-auto pt-4 text-sm font-semibold text-navy">View itinerary →</span>
+          <span className="tile-cta text-sm font-semibold text-navy">View itinerary →</span>
         </div>
       </Link>
     </li>

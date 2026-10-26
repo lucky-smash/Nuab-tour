@@ -88,13 +88,13 @@ export default async function DestinationPage({ params }: { params: Promise<{ id
           {d.cabs.length > 0 && (
             <section>
               <h2 className="text-display-sm">By outstation cab</h2>
-              <ul className="mt-6 grid gap-px bg-line sm:grid-cols-2">
+              <ul className="tile-grid mt-6 sm:grid-cols-2">
                 {d.cabs.map((c) => (
-                  <li key={c.id} className="bg-white p-5">
+                  <li key={c.id} className="tile p-6">
                     <p className="flex items-center gap-2 font-semibold text-navy"><Car className="size-4" aria-hidden /> {c.from} to {c.to}</p>
                     <p className="mt-1 font-mono text-[0.64rem] uppercase tracking-[0.1em] text-muted">{c.distanceLabel} · approx. {c.travelTime} · {c.fareLabel}</p>
                     {c.routeVia && <p className="mt-3 text-sm text-ink/75">Via {c.routeVia}: {c.waypoints.join(" — ")}</p>}
-                    <div className="mt-4 flex gap-4 text-sm">
+                    <div className="tile-cta flex gap-4 text-sm">
                       <a href={c.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline font-semibold text-navy">Book on WhatsApp</a>
                       <Link href={`${c.page.path}#${c.id}`} className="link-underline text-muted">{c.page.title}</Link>
                     </div>

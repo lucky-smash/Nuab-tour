@@ -279,7 +279,7 @@ function StopPanel({ stop, current, index }: { stop: StopVM; current: boolean; i
       <div className={clsx("absolute inset-x-0 bottom-0 md:inset-y-0 md:flex md:items-center md:pb-4 md:pt-24", right ? "md:justify-end" : "md:justify-start")}>
         <div className="container-x md:!max-w-none md:px-[max(2.5rem,calc((100vw-82rem)/2+2.5rem))]">
           {/* solid editorial card: reliable contrast over any sky or engraving */}
-          <div className={clsx("relative max-w-[35rem] border-t-2 border-coral bg-ivory px-5 pb-6 pt-5 shadow-[0_30px_70px_-35px_rgb(23_43_61/.55)] md:border md:border-t-2 md:border-sand/40 md:border-t-coral md:px-8 md:pb-7 md:pt-6", right && "md:ml-auto")}>
+          <div className={clsx("relative max-w-[35rem] border border-t-2 border-line border-t-coral bg-ivory px-5 pb-6 pt-5 md:px-8 md:pb-7 md:pt-6", right && "md:ml-auto")}>
             <StopBody stop={stop} headingLevel="h2" compact index={stops_index()} />
           </div>
         </div>

@@ -80,9 +80,9 @@ export function FeaturedDestinations() {
             All {destinations.length} destinations <ArrowUpRight className="size-4" aria-hidden />
           </Link>
         </div>
-        <ul className="mt-12 grid grid-cols-1 gap-3 md:auto-rows-[15rem] md:grid-cols-12">
+        <ul className="mt-12 grid grid-cols-1 gap-6 md:auto-rows-[17rem] md:grid-cols-12 md:gap-8">
           {list.map((t, i) => (
-            <li key={t.id} className={clsx("min-h-[17rem]", t.span, t.id === "thailand" && "md:!row-span-1")}>
+            <li key={t.id} className={clsx("min-h-[17rem] md:min-h-0", t.span, t.id === "thailand" && "md:!row-span-1")}>
               <Link href={t.href} className="group relative flex h-full overflow-hidden bg-midnight">
                 {t.img && (
                   // eslint-disable-next-line @next/next/no-img-element

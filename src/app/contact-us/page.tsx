@@ -19,26 +19,26 @@ export default function ContactPage() {
       </PageHeader>
       <Section>
         <p className="max-w-2xl text-lede text-ink/75">{contact.getInTouch}</p>
-        <div className="mt-12 grid gap-px bg-line md:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white p-6">
+        <div className="tile-grid mt-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="tile p-6">
             <MapPin className="size-5 text-navy" aria-hidden />
             <h2 className="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-stone">Office address</h2>
             <address className="mt-2 not-italic text-[0.95rem]">{SITE.address.line1},<br />{SITE.address.line2},<br />{SITE.address.city}</address>
             <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm font-semibold text-navy link-underline">Open in Google Maps</a>
           </div>
-          <div className="bg-white p-6">
+          <div className="tile p-6">
             <Phone className="size-5 text-navy" aria-hidden />
             <h2 className="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-stone">Phone / WhatsApp</h2>
             <ul className="mt-2 space-y-1">
               {SITE.phones.map((p) => <li key={p.tel}><a className="font-semibold text-navy hover:underline" href={`tel:${p.tel}`}>{p.display}</a></li>)}
             </ul>
           </div>
-          <div className="bg-white p-6">
+          <div className="tile p-6">
             <Mail className="size-5 text-navy" aria-hidden />
             <h2 className="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-stone">Email</h2>
             <a className="mt-2 block break-all font-semibold text-navy hover:underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
           </div>
-          <div className="bg-white p-6">
+          <div className="tile p-6">
             <MessageCircle className="size-5 text-navy" aria-hidden />
             <h2 className="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-stone">WhatsApp</h2>
             <a className="mt-2 block font-semibold text-navy hover:underline" href={whatsappLink("Hello NUAB Tourism, I have a question about a tour.")} target="_blank" rel="noopener noreferrer">Message us on WhatsApp</a>

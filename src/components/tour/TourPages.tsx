@@ -83,9 +83,9 @@ export function DayTourPage({ t }: { t: DayTour }) {
           {t.places.length > 0 && (
             <section>
               <h2 className="text-display-sm">Places covered</h2>
-              <ol className="mt-6 grid gap-px bg-line sm:grid-cols-2">
+              <ol className="tile-grid tile-grid-tight mt-6 sm:grid-cols-2">
                 {t.places.map((p, i) => (
-                  <li key={p} className="flex items-baseline gap-4 bg-white p-4">
+                  <li key={p} className="tile !flex-row items-baseline gap-4 px-5 py-4">
                     <span className="font-mono text-[0.7rem] text-stone">{String(i + 1).padStart(2, "0")}</span>
                     <span className="font-display text-lg text-navy">{p}</span>
                   </li>
@@ -183,8 +183,8 @@ export function MultiDayPage({ t }: { t: MultiDayTour }) {
           {t.highlights.length > 0 && (
             <section>
               <h2 className="text-display-sm">Highlights</h2>
-              <ul className="mt-6 grid gap-px bg-line md:grid-cols-2">
-                {t.highlights.map((h) => <li key={h} className="bg-white p-4 text-[0.95rem] text-ink/85">{h}</li>)}
+              <ul className="tile-grid tile-grid-tight mt-6 md:grid-cols-2">
+                {t.highlights.map((h) => <li key={h} className="tile px-5 py-4 text-[0.95rem] text-ink/85">{h}</li>)}
               </ul>
             </section>
           )}
@@ -279,11 +279,11 @@ export function CabPageView({ c }: { c: CabPage }) {
         </div>
       </PageHeader>
       <Section eyebrow={`${c.routes.length} routes · from ₹10/km`} title={`Delhi to ${region} by road`}>
-        <ul className="grid gap-px bg-line md:grid-cols-2 xl:grid-cols-3">
+        <ul className="tile-grid md:grid-cols-2 xl:grid-cols-3">
           {c.routes.map((r) => {
             const id = destIds.get(r.to.toLowerCase());
             return (
-              <li key={r.id} id={r.id} className="flex flex-col bg-white p-6">
+              <li key={r.id} id={r.id} className="tile p-6">
                 <p className="font-mono text-[0.64rem] uppercase tracking-[0.14em] text-stone">{r.from} → {r.to}</p>
                 <h3 className="mt-2 font-display text-2xl text-navy">{r.to === "Chhota" ? "Chhota (Chopta)" : r.to}</h3>
                 <dl className="mt-4 grid grid-cols-3 gap-3 border-y border-line py-3 text-sm">
@@ -302,7 +302,7 @@ export function CabPageView({ c }: { c: CabPage }) {
                   </div>
                 )}
                 <p className="mt-4 flex-1 text-[0.9rem] text-ink/75">{r.paras[0]}</p>
-                <div className="mt-5 flex flex-wrap gap-4 text-sm">
+                <div className="tile-cta flex flex-wrap gap-4 text-sm">
                   <a href={r.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline font-semibold text-navy">Book on WhatsApp</a>
                   {id && <Link href={`/destinations/${id}/`} className="link-underline text-muted">About {r.to}</Link>}
                 </div>
