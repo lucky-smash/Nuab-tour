@@ -88,7 +88,7 @@ export const STOPS: JourneyStop[] = [
     lng: 78.0421,
     destinationIds: ["agra", "fatehpur-sikri"],
     engraving: "taj-mahal",
-    model: { url: "/models/landmarks/taj-mahal.glb", height: 12, yaw: -8, facade: "+z", offset: { ahead: 18, across: 40 }, hero: false },
+    model: { url: "/models/landmarks/taj-mahal.glb", height: 12, yaw: -8, facade: "+z", offset: { ahead: 18, across: 40 } },
     photoId: "agra-taj-mahal",
     intro: intro("agra-same-day-tour-by-car"),
     introSource: "/agra-same-day-tour-by-car/",

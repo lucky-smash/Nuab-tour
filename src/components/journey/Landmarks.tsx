@@ -169,7 +169,7 @@ export function LandmarkModels() {
 // ---------------------------------------------------------------------------
 const SKYLINE: { id: string; yaw: number; dist: number; scale: number }[] = [
   { id: "hawa-mahal", yaw: 24, dist: 190, scale: 0.5 },
-  { id: "temple", yaw: 11, dist: 195, scale: 0.46 },
+  { id: "temple", yaw: 16, dist: 195, scale: 0.46 },
   { id: "taj-mahal", yaw: -6, dist: 175, scale: 0.62 },
   { id: "india-gate", yaw: -19, dist: 165, scale: 0.46 }, // real model (HeroLandmarkModels): clear sky right of the tail
 ];
@@ -235,8 +235,10 @@ function heroModelFor(id: string) {
 // to the engraving's height, softened by the dawn haze. They rise out of the cloud sea with the
 // aircraft's entrance and sink back into it as the journey begins — the stop's own model then
 // rises at Delhi.
-const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: number; turn?: number }> = {
+const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: number; turn?: number; fog?: boolean }> = {
   "india-gate": { yaw: -11, dist: 100, height: 25, turn: 18 },
+  // the classic poster view: far behind the aircraft, dome and minarets rising above the fuselage
+  "taj-mahal": { yaw: 0.5, dist: 210, height: 45, turn: 0, fog: false },
 };
 
 function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; id: string }) {
@@ -256,11 +258,12 @@ function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; i
       if (!mesh.isMesh) return;
       const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
       mat.clippingPlanes = [clip];
-      mat.envMapIntensity = 0.6;
+      mat.envMapIntensity = mat.map ? 0.6 : 0.35;
+      if (place.fog === false) mat.fog = false;
       mesh.material = mat;
     });
     return { root, pos, rotY, clip };
-  }, [scene, curve, place.yaw, place.dist, place.turn, m.facade, m.yaw]);
+  }, [scene, curve, place.yaw, place.dist, place.turn, place.fog, m.facade, m.yaw]);
   const group = useRef<THREE.Group>(null);
   const shown = useRef(0);
   useFrame((_, dt) => {
