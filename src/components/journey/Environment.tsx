@@ -203,20 +203,7 @@ export function Clouds({ curve, count }: { curve: THREE.Curve<THREE.Vector3>; co
       else { lateral = (r() - 0.5) * 220; y = 30 + r() * 14; } // high cumulus
       push(tmp.clone().addScaledVector(side, lateral).setY(y).add(new THREE.Vector3((r() - 0.5) * 20, 0, (r() - 0.5) * 20)), 12 + r() * 22, 0.55 + r() * 0.35);
     }
-    // hero cloud deck: below and around the departure, kept clear of the aircraft and of the hero
-    // camera (a cloud right beside the lens reads as a white smear, not a cloud)
-    const p0 = curve.getPointAt(0);
-    const t0 = curve.getTangentAt(0);
-    const h0 = new THREE.Vector3(t0.x, 0, t0.z).normalize();
-    const s0 = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), h0).normalize();
-    const heroCam = p0.clone().addScaledVector(s0, 10.2).addScaledVector(h0, 11.6);
-    for (let i = 0; i < Math.round(count * 0.7); i++) {
-      const a = r() * Math.PI * 2, d = 24 + r() * 130;
-      const pos = new THREE.Vector3(p0.x + Math.cos(a) * d, 2.5 + r() * 3.5, p0.z + Math.sin(a) * d);
-      const size = 16 + r() * 30;
-      if (pos.distanceTo(heroCam) < 34 + size * 0.5) continue;
-      push(pos, size, 0.8 + r() * 0.2);
-    }
+    // no clouds in the hero composition: the first viewport is a clear dawn sky
     return out;
   }, [curve, count]);
   if (!texes) return null;
@@ -228,83 +215,6 @@ export function Clouds({ curve, count }: { curve: THREE.Curve<THREE.Vector3>; co
         </sprite>
       ))}
     </group>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Cloud sea: in the first viewport the aircraft flies above a sunlit deck of cloud tops that
-// stretches to the horizon (where the engraved monuments rise). It dissolves as the journey
-// begins, revealing the engraved atlas below.
-// ---------------------------------------------------------------------------
-function cloudSeaTexture(size: number) {
-  const c = document.createElement("canvas");
-  c.width = c.height = size;
-  const ctx = c.getContext("2d")!;
-  const r = rng(77);
-  const k = size / 1024;
-  // thin base veil so gaps read as depth rather than holes
-  const base = ctx.createRadialGradient(size / 2, size / 2, size * 0.1, size / 2, size / 2, size * 0.5);
-  base.addColorStop(0, "rgba(190,206,224,0.35)");
-  base.addColorStop(1, "rgba(190,206,224,0)");
-  ctx.fillStyle = base;
-  ctx.fillRect(0, 0, size, size);
-  for (let i = 0; i < 620; i++) {
-    const a = r() * Math.PI * 2, d = Math.sqrt(r()) * size * 0.47;
-    const x = size / 2 + Math.cos(a) * d, y = size / 2 + Math.sin(a) * d;
-    const rad = (20 + r() * 70) * k;
-    // shaded base (offset down), then sunlit crown
-    const g1 = ctx.createRadialGradient(x, y + rad * 0.35, 0, x, y + rad * 0.35, rad * 1.1);
-    g1.addColorStop(0, "rgba(104,130,164,0.55)");
-    g1.addColorStop(1, "rgba(104,130,164,0)");
-    ctx.fillStyle = g1;
-    ctx.beginPath(); ctx.arc(x, y + rad * 0.35, rad * 1.1, 0, Math.PI * 2); ctx.fill();
-    const g2 = ctx.createRadialGradient(x - rad * 0.2, y - rad * 0.25, 0, x, y, rad);
-    g2.addColorStop(0, "rgba(255,250,242,0.95)");
-    g2.addColorStop(0.6, "rgba(246,247,250,0.7)");
-    g2.addColorStop(1, "rgba(246,247,250,0)");
-    ctx.fillStyle = g2;
-    ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
-  }
-  // soft circular edge
-  ctx.globalCompositeOperation = "destination-in";
-  const edge = ctx.createRadialGradient(size / 2, size / 2, size * 0.3, size / 2, size / 2, size * 0.5);
-  edge.addColorStop(0, "rgba(0,0,0,1)");
-  edge.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = edge;
-  ctx.fillRect(0, 0, size, size);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
-  return t;
-}
-
-export function CloudSea({ curve, lite }: { curve: THREE.Curve<THREE.Vector3>; lite: boolean }) {
-  const { tex, center } = useMemo(() => {
-    const p0 = curve.getPointAt(0);
-    const t0 = curve.getTangentAt(0);
-    const head = new THREE.Vector3(t0.x, 0, t0.z).normalize();
-    const side = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), head).normalize();
-    const cam = p0.clone().addScaledVector(side, 10.2).addScaledVector(head, 11.6);
-    const view = new THREE.Vector3(p0.x - cam.x, 0, p0.z - cam.z).normalize();
-    return {
-      tex: typeof document !== "undefined" ? cloudSeaTexture(lite ? 1024 : 2048) : null,
-      center: new THREE.Vector3(cam.x, 2.2, cam.z).addScaledVector(view, 95),
-    };
-  }, [curve, lite]);
-  const mat = useRef<THREE.MeshBasicMaterial>(null);
-  const mesh = useRef<THREE.Mesh>(null);
-  useEffect(() => () => tex?.dispose(), [tex]);
-  useFrame(() => {
-    const k = 1 - smoothstep(0.02, 0.075, journey.current); // parts as Delhi (and its India Gate) comes into view
-    if (mat.current) mat.current.opacity = k;
-    if (mesh.current) mesh.current.visible = k > 0.003;
-  });
-  if (!tex) return null;
-  return (
-    <mesh ref={mesh} position={center} rotation-x={-Math.PI / 2} renderOrder={0}>
-      <circleGeometry args={[230, 64]} />
-      <meshBasicMaterial ref={mat} map={tex} transparent depthWrite={false} fog />
-    </mesh>
   );
 }
 

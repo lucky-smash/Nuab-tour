@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { Aircraft } from "./Aircraft";
-import { AtlasGround, CloudSea, Clouds, Lights, Ridges, Sky } from "./Environment";
+import { AtlasGround, Clouds, Lights, Ridges, Sky } from "./Environment";
 import { Engravings, HeroLandmarkModels, HeroSkyline, LandmarkModels, RouteLines, StopMarkers } from "./Landmarks";
 import { composeCamera, getCurve, journey, progressToU, lerp, stopFrames, stage } from "./journeyMath";
 import { STOPS } from "./config";
@@ -48,7 +48,6 @@ function Scene({ lite, onAircraftReady }: { lite: boolean; onAircraftReady?: () 
       </Environment>
       <AtlasGround lite={lite} />
       <Ridges />
-      <CloudSea curve={curve} lite={lite} />
       <Clouds curve={curve} count={lite ? 26 : 54} />
       <RouteLines curve={curve} />
       <StopMarkers />
