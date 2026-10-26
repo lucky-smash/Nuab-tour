@@ -20,7 +20,7 @@ export function Footer() {
       <div className="container-x pt-16 pb-10">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <Wordmark inverted className="h-16" />
+            <Wordmark inverted size="lg" />
             <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-white/70">{SITE.footerTagline}</p>
             <p className="mt-6 font-display text-xl italic text-white/90">“{SITE.tagline}”</p>
           </div>

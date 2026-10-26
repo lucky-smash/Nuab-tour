@@ -1,22 +1,36 @@
 import { clsx } from "@/lib/site";
 
 /**
- * NUAB Tourism logo: the client's original artwork (nuabtourism.in), on a transparent background so it
- * sits on the sky, the white nav and the navy footer alike. `inverted` (navy footer) keeps NUAB red and
- * turns TOURISM and the division line white, which the original blue cannot hold on navy.
+ * NUAB Tourism logo: the client's original artwork (nuabtourism.in) — the round NT badge (as in its
+ * search listing) beside the NUAB / TOURISM lettering, both on transparent backgrounds so they sit on the
+ * sky, the white nav and the navy footer alike. `inverted` (navy footer) keeps NUAB red and turns TOURISM
+ * and the division line white, which the original blue cannot hold on navy.
  */
-export function Wordmark({ className, inverted = false }: { className?: string; inverted?: boolean }) {
+export function Wordmark({ className, inverted = false, size = "md" }: { className?: string; inverted?: boolean; size?: "md" | "lg" }) {
+  const lg = size === "lg";
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- 252×125 PNG, no resizing to gain from next/image
-    <img
-      src={inverted ? "/brand/nuab-tourism-logo-light.png" : "/brand/nuab-tourism-logo.png"}
-      alt="NUAB Tourism — a division of NUAB Enterprises Pvt. Ltd."
-      width={252}
-      height={125}
-      decoding="async"
-      className={clsx("block h-[46px] w-auto select-none", className)}
-      draggable={false}
-    />
+    <span className={clsx("flex items-center", lg ? "gap-3.5" : "gap-2.5", className)}>
+      <span
+        className={clsx(
+          "grid shrink-0 place-items-center rounded-full bg-white",
+          lg ? "size-[58px]" : "size-[42px]",
+          inverted ? "shadow-[0_2px_10px_rgb(0_0_0/0.25)]" : "ring-1 ring-line shadow-[0_2px_8px_rgb(35_58_80/0.12)]",
+        )}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- small brand PNGs, nothing for next/image to gain */}
+        <img src="/brand/nuab-icon.png" alt="" width={512} height={512} decoding="async" className="w-[74%] select-none" draggable={false} />
+      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={inverted ? "/brand/nuab-tourism-logo-light.png" : "/brand/nuab-tourism-logo.png"}
+        alt="NUAB Tourism — a division of NUAB Enterprises Pvt. Ltd."
+        width={252}
+        height={125}
+        decoding="async"
+        className={clsx("block w-auto select-none", lg ? "h-16" : "h-[46px]")}
+        draggable={false}
+      />
+    </span>
   );
 }
 
