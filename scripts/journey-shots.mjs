@@ -4,7 +4,7 @@ import { chromium } from "playwright-core";
 const [prefix, w, h, ...rest] = process.argv.slice(2);
 const mobile = rest.includes("--mobile");
 const ps = rest.filter((x) => !x.startsWith("--")).map(Number);
-const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const browser = await chromium.launch({ channel: "chrome", args: process.env.SWS ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] : [] });
 const ctx = await browser.newContext({ viewport: { width: +w, height: +h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
 await ctx.addInitScript(() => { try { sessionStorage.setItem("nuab-intro", "1"); } catch {} });
 const page = await ctx.newPage();

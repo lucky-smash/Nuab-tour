@@ -1,14 +1,15 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { getDrawing } from "@/components/engraving/drawings";
 import { STOPS, toWorld } from "./config";
-import { journey, progressToU, smoothstep, activeStop, stopFrames } from "./journeyMath";
+import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey } from "./journeyMath";
 import { formatCoord } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
@@ -37,11 +38,12 @@ function engravingGeometry(id: string) {
 export function Engravings() {
   const items = useMemo(
     () =>
-      STOPS.map((s, i) => {
+      STOPS.flatMap((s, i) => {
+        if (s.model) return []; // a real 3D model stands at this stop instead (LandmarkModels)
         const geo = engravingGeometry(s.engraving);
         const mainMat = new THREE.LineBasicMaterial({ color: "#233a50", transparent: true, opacity: 0.85, fog: true });
         const hatchMat = new THREE.LineBasicMaterial({ color: "#838177", transparent: true, opacity: 0.5, fog: true });
-        return { stop: s, pos: stopFrames()[i].engraving.clone(), geo, mainMat, hatchMat };
+        return [{ stop: s, pos: stopFrames()[i].engraving.clone(), geo, mainMat, hatchMat }];
       }),
     [],
   );
@@ -73,6 +75,89 @@ export function Engravings() {
         </group>
       ))}
     </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Real landmark models (where a stop has one): textured GLB standing across from the aircraft,
+// turned so its main facade meets the camera at the stop. It rises out of the atlas bottom-up as
+// the aircraft approaches (a world-space clipping plane, mirroring the engravings' draw-in) and
+// sinks back in reverse, so scrolling up and down always shows the same state.
+// ---------------------------------------------------------------------------
+const FACADE_YAW = { "+x": Math.PI / 2, "-x": -Math.PI / 2, "+z": 0, "-z": Math.PI } as const;
+
+function contactShadowTexture() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d")!;
+  const grad = g.createRadialGradient(64, 64, 4, 64, 64, 64);
+  grad.addColorStop(0, "rgba(35,43,52,0.42)");
+  grad.addColorStop(0.55, "rgba(35,43,52,0.16)");
+  grad.addColorStop(1, "rgba(35,43,52,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function LandmarkModel({ index }: { index: number }) {
+  const stop = STOPS[index];
+  const m = stop.model!;
+  const { scene } = useGLTF(m.url);
+  const built = useMemo(() => {
+    const f = stopFrames()[index];
+    // camera position at the stop (desktop composition): look from the monument back to it
+    const c = cameraKey(stop.p);
+    const cam = f.plane.clone().addScaledVector(f.side, c.side).addScaledVector(f.head, -c.back);
+    const toCam = Math.atan2(cam.x - f.engraving.x, cam.z - f.engraving.z);
+    const rotY = toCam - FACADE_YAW[m.facade ?? "+z"] + ((m.yaw ?? 0) * Math.PI) / 180;
+    const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+    const root = scene.clone(true);
+    const mats: THREE.MeshStandardMaterial[] = [];
+    root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
+      mat.clippingPlanes = [clip];
+      mat.envMapIntensity = 0.55;
+      if (mat.map) mat.map.anisotropy = 8;
+      mesh.material = mat;
+      mats.push(mat);
+    });
+    const shadow = new THREE.MeshBasicMaterial({ map: contactShadowTexture(), transparent: true, depthWrite: false, opacity: 0 });
+    return { root, pos: f.engraving.clone(), rotY, clip, mats, shadow };
+  }, [scene, index, stop.p, m.facade, m.yaw]);
+  const group = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const p = journey.current;
+    // rise from 0.10 before the stop, complete 0.03 before; sink again well after it
+    const rise = smoothstep(stop.p - 0.1, stop.p - 0.03, p) * (1 - smoothstep(stop.p + 0.14, stop.p + 0.22, p));
+    if (group.current) group.current.visible = rise > 0.001;
+    built.clip.constant = rise >= 0.999 ? m.height * 2 : m.height * 1.02 * rise; // keeps y <= constant
+    built.shadow.opacity = Math.min(1, rise * 2.5);
+  });
+  return (
+    <group ref={group} position={built.pos} name={`landmark-${stop.id}`}>
+      <mesh rotation-x={-Math.PI / 2} position-y={0.06} material={built.shadow} renderOrder={-1}>
+        <planeGeometry args={[m.height * 1.5, m.height * 1.5]} />
+      </mesh>
+      <primitive object={built.root} rotation-y={built.rotY} scale={m.height} />
+    </group>
+  );
+}
+
+export function LandmarkModels() {
+  return (
+    <>
+      {STOPS.map((s, i) =>
+        s.model ? (
+          <Suspense key={s.id} fallback={null}>
+            <LandmarkModel index={i} />
+          </Suspense>
+        ) : null,
+      )}
+    </>
   );
 }
 

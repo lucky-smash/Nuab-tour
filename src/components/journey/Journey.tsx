@@ -102,7 +102,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
       });
       journey.target = st.progress;
 
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" }, scrollTrigger: { trigger: section.current, start: "top top", end: "bottom bottom", scrub: 0.6 } });
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" }, scrollTrigger: { trigger: section.current, start: "top top", end: "bottom bottom", scrub: 0.9 } });
       tl.set({}, {}, 1); // timeline length = 1 ⇒ positions are journey progress
       tl.to("[data-panel='hero']", { autoAlpha: 0, y: -50, duration: 0.03, ease: "power1.in" }, HERO_END - 0.015);
       tl.to("[data-hero-scroll]", { autoAlpha: 0, duration: 0.01 }, 0.004);
@@ -110,7 +110,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
         const sel = `[data-panel='${s.id}']`;
         const enter = Math.max(s.p - 0.065, HERO_END + 0.03); // never overlaps the hero fade
         tl.fromTo(sel, { autoAlpha: 0, y: 46 }, { autoAlpha: 1, y: 0, duration: 0.03 }, enter);
-        tl.fromTo(`${sel} [data-postcard]`, { autoAlpha: 0, y: 60, rotate: s.layout === "left" ? 3 : -3 }, { autoAlpha: 1, y: 0, rotate: s.layout === "left" ? 1.5 : -1.5, duration: 0.035 }, enter + 0.01);
+        if (s.photo && !s.hasModel) tl.fromTo(`${sel} [data-postcard]`, { autoAlpha: 0, y: 60, rotate: s.layout === "left" ? 3 : -3 }, { autoAlpha: 1, y: 0, rotate: s.layout === "left" ? 1.5 : -1.5, duration: 0.035 }, enter + 0.01);
         tl.to(sel, { autoAlpha: 0, y: -46, duration: 0.03, ease: "power1.in" }, s.p + 0.055);
       }
       tl.fromTo("[data-panel='arrival']", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.03 }, ARRIVAL_P - 0.01);
@@ -167,7 +167,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
   }, []);
 
   return (
-    <section ref={section} id="journey" aria-label="The NUAB journey: Delhi, Agra, Jaipur, Mathura–Vrindavan, Haridwar–Rishikesh" className="relative h-[620vh] md:h-[760vh]">
+    <section ref={section} id="journey" aria-label="The NUAB journey: Delhi, Agra, Jaipur, Mathura–Vrindavan, Haridwar–Rishikesh" className="relative h-[840vh] md:h-[1020vh]">
       <div ref={stage} className="sky-hero sticky top-0 h-[100svh] w-full overflow-hidden">
         <div className={clsx("absolute inset-0 transition-opacity duration-[900ms]", ready ? "opacity-100" : "opacity-0")}>
           {enable3d && <JourneyCanvas active={active} lite={lite} onAircraftReady={() => setReady(true)} />}
@@ -284,7 +284,8 @@ function StopPanel({ stop, current, index }: { stop: StopVM; current: boolean; i
           </div>
         </div>
       </div>
-      {stop.photo && (
+      {/* where a real 3D model stands, it is the landmark; the photo postcard would only cover it */}
+      {stop.photo && !stop.hasModel && (
         <Postcard photo={stop.photo} title={stop.title} className={clsx("absolute top-[16%] hidden w-[17rem] lg:block xl:w-[19.5rem]", right ? "left-[4%]" : "right-[7%]")} />
       )}
     </article>

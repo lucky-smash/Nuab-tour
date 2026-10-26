@@ -29,6 +29,7 @@ npm test             # data-fidelity tests (vitest): prices, durations, links vs
 | `npm run data:extract` | Parses the archive into `src/data/generated/*.json`: tours, fares, itineraries, cabs, packages, blog, gallery and road trips. Never hand-edit these files. |
 | `npm run assets:fetch` | Downloads the company's own images into `public/media/wp/`. It also pulls CC-licensed Wikimedia Commons photographs into `public/media/commons/`, recording author and licence in `photos.json`. Credits are shown on every photo. |
 | `npm run model:convert` | Converts the client's `assets/source/3d-model.3ds` into `public/models/nuab-aircraft.glb`. |
+| `npm run model:landmark -- <obj> <texture> <out.glb>` | Converts a textured landmark model (OBJ + one texture image) into a compact GLB for the journey. |
 
 The destination list is in `src/data/destinations.ts`. It holds stable ids and true coordinates, and it is the single source for the journey, the map, search and the directory. Descriptions and related offers on it are derived from the extracted data.
 
@@ -41,11 +42,32 @@ The destination list is in `src/data/destinations.ts`. It holds stable ids and t
 - **Branding:** "NUAB TOURISM" titles and a navy cheatline are projected decals that conform to the fuselage, in `src/components/journey/Aircraft.tsx`. The model has no usable UV layout for a painted texture, so decals were the faithful option. The geometry is untouched.
 - **Static fallback:** `public/media/aircraft-hero.png` is a render of the real model with its livery. Regenerate it with `node scripts/capture-aircraft.mjs` while `npm run dev` is running; it uses the dev-only route `/dev-preview/aircraft/`.
 
+## Landmark models
+
+Real 3D monuments can replace the line engravings, one stop at a time. India Gate at the Delhi stop is the first.
+
+- **Source:** `india-gate-lowpoly-3d-model.zip`, supplied by the client. The zip stays in `assets/source/` locally and is not committed; its extracted files are. It is a low-poly OBJ (653 triangles) with one 2048 px photographic texture. The extracted files are in `assets/source/india-gate/`. Confirm that the model's licence allows use on a commercial website before launch; the archive carries no licence or author information.
+- **Conversion:** `scripts/convert-landmark.mjs` centres the model on its base, scales it to a height of 1, converts the texture to WebP (keeping the alpha cut-outs for the Amar Jawan Jyoti rifles and finials) and writes a 274 KB GLB to `public/models/landmarks/india-gate.glb`.
+- **In the scene:** `LandmarkModels` in `src/components/journey/Landmarks.tsx` stands the model across from the aircraft, turned so its main arch faces the stop camera. It rises out of the atlas bottom-up as the aircraft approaches and sinks back in reverse. Clouds are kept off the monument and its sightline, and the stop's photo postcard is hidden because the model replaces it.
+
+To add another monument:
+
+1. Put the zip in `assets/source/` and extract it into its own folder.
+2. Run the converter, for example:
+   ```bash
+   npm run model:landmark -- assets/source/taj/model.obj assets/source/taj/texture.png public/models/landmarks/taj-mahal.glb
+   ```
+3. Add a `model` entry to that stop in `src/components/journey/config.ts`. `height` is in scene units, so 15 matches India Gate. `facade` is the model axis its main face looks along, and `yaw` fine-tunes the angle in degrees.
+   ```ts
+   model: { url: "/models/landmarks/taj-mahal.glb", height: 15, facade: "+x", yaw: -24 },
+   ```
+
 ## How the scroll journey works
 
 - **Hero scene:** the first viewport is a dawn flight above a cloud sea. A three-stop sky shader (zenith, sky blue, warm horizon) carries a sunrise glow placed behind the aircraft. A sunlit cloud deck dissolves as the journey begins, and four engraved monuments rise on the horizon. A CSS twin of the sky (`.sky-hero`) paints instantly, before WebGL. The copy rises in about one second, and the aircraft glides into its composition in about 1.8 seconds. There is no blocking intro screen.
 - **Lighting:** a camera-relative warm key light, a sky and ground hemisphere fill, a sun rim light, and a soft reflection environment. Paint and metal finishes are tuned at runtime; the GLB itself is unchanged.
 
+- **Pace:** the journey section is 1020vh tall on desktop and 840vh on mobile, and the aircraft eases toward the scroll position with gentle damping, so it glides rather than jumps. Change the section height in `Journey.tsx` to make the whole flight faster or slower.
 - **One progress source:** a single GSAP ScrollTrigger supplies progress 0–1. It writes a mutable store that the WebGL frame loop reads, so scrolling causes no React re-renders, and it scrubs the DOM panel timeline. Native scrolling is never hijacked.
 - **Flight path:** a centripetal Catmull-Rom curve. The aircraft's orientation follows the curve tangent, it banks from the turn rate, and it retracts its gear after takeoff.
 - **Camera:** per-stop camera keyframes put the camera opposite each landmark, so the aircraft crosses in front of the engraving. The nose always points toward the text column.

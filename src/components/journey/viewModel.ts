@@ -13,6 +13,8 @@ export type StopVM = {
   place: string;
   coord: string;
   engraving: string;
+  /** a real 3D landmark model stands at this stop in the immersive scene */
+  hasModel: boolean;
   layout: "left" | "right";
   intro: string;
   introSource: string;
@@ -51,6 +53,7 @@ export function buildStopVMs(): StopVM[] {
       place: s.place,
       coord: `${formatCoord(s.lat, "lat")} · ${formatCoord(s.lng, "lng")}`,
       engraving: s.engraving,
+      hasModel: !!s.model,
       layout: s.layout,
       intro: s.intro,
       introSource: s.introSource,

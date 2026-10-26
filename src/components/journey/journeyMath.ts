@@ -142,7 +142,7 @@ export const CAM_KEYS: CamKey[] = [
   K(0.05, 13, 3.4, -10, 3, 1.4, 35, 0.28),
   // Stop keys: |side| is a magnitude; the sign is resolved at runtime so the camera always sits
   // opposite the landmark and the aircraft crosses in front of the engraving.
-  K(0.105, 25, 5, 8, 3, 3.2, 38, 0.3, 0), // Delhi: beam, India Gate beyond, text left
+  K(0.105, 25, 9, 8, 3, 3.4, 38, 0.3, 0), // Delhi: high beam — the aircraft passes below the India Gate model beyond it; text left
   K(0.19, -7, 7.5, 26, 10, 0, 40, 0), // cruise chase
   K(0.27, 25, 5, 8, 3, 3.2, 38, -0.3, 1), // Agra: text right, aircraft left
   K(0.37, 7, 8, 25, 10, 0, 40, 0),

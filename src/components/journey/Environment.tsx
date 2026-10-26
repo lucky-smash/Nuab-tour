@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { journey, skyColors, rng, smoothstep, stage, type SkyState } from "./journeyMath";
+import { journey, skyColors, rng, smoothstep, stage, stopFrames, cameraKey, type SkyState } from "./journeyMath";
 import { ATLAS, STOPS, toWorld } from "./config";
 import { DESTINATION_SEEDS } from "@/data/destinations";
 import { formatCoord } from "@/lib/site";
@@ -165,9 +165,30 @@ export function Clouds({ curve, count }: { curve: THREE.Curve<THREE.Vector3>; co
       for (const q of route) best = Math.min(best, Math.hypot(pos.x - q.x, pos.z - q.z));
       return best > 58 + size;
     };
+    // Real landmark models: keep the monument itself, and the sightline from the stop camera to it,
+    // free of cloud billboards (a cloud in front of a textured model reads as a smear).
+    const sight = STOPS.flatMap((st, i) => {
+      if (!st.model) return [];
+      const f = stopFrames()[i];
+      const c = cameraKey(st.p);
+      const cam = f.plane.clone().addScaledVector(f.side, c.side).addScaledVector(f.head, -c.back);
+      return [{ a: new THREE.Vector2(f.engraving.x, f.engraving.z), b: new THREE.Vector2(cam.x, cam.z) }];
+    });
+    const clearOfLandmarks = (pos: THREE.Vector3, size: number) => {
+      const q = new THREE.Vector2(pos.x, pos.z);
+      for (const { a, b } of sight) {
+        if (q.distanceTo(a) < 30 + size) return false;
+        const ab = b.clone().sub(a);
+        const t = Math.min(1, Math.max(0, q.clone().sub(a).dot(ab) / ab.lengthSq()));
+        if (q.distanceTo(a.clone().addScaledVector(ab, t)) < 14 + size) return false;
+      }
+      return true;
+    };
     const push = (pos: THREE.Vector3, size: number, opacity: number) => {
       if (!clearOfRoute(pos, size)) return;
-      out.push({ pos, w: size * 2, h: size, opacity, tex: Math.floor(r() * 3) });
+      const tex = Math.floor(r() * 3); // drawn before the landmark test so other clouds keep their seeds
+      if (!clearOfLandmarks(pos, size)) return;
+      out.push({ pos, w: size * 2, h: size, opacity, tex });
     };
     for (let i = 0; i < count; i++) {
       const u = r();
@@ -273,7 +294,7 @@ export function CloudSea({ curve, lite }: { curve: THREE.Curve<THREE.Vector3>; l
   const mesh = useRef<THREE.Mesh>(null);
   useEffect(() => () => tex?.dispose(), [tex]);
   useFrame(() => {
-    const k = 1 - smoothstep(0.03, 0.13, journey.current);
+    const k = 1 - smoothstep(0.02, 0.075, journey.current); // parts as Delhi (and its India Gate) comes into view
     if (mat.current) mat.current.opacity = k;
     if (mesh.current) mesh.current.visible = k > 0.003;
   });

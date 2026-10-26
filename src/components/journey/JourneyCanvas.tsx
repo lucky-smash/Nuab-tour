@@ -6,7 +6,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { Aircraft } from "./Aircraft";
 import { AtlasGround, CloudSea, Clouds, Lights, Ridges, Sky } from "./Environment";
-import { Engravings, HeroSkyline, RouteLines, StopMarkers } from "./Landmarks";
+import { Engravings, HeroSkyline, LandmarkModels, RouteLines, StopMarkers } from "./Landmarks";
 import { cameraKey, getCurve, journey, progressToU, lerp, stopFrames, stage } from "./journeyMath";
 import { STOPS } from "./config";
 
@@ -24,6 +24,7 @@ export default function JourneyCanvas({ active, lite, onAircraftReady }: { activ
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 0.98;
+        gl.localClippingEnabled = true; // landmark models rise out of the atlas
       }}
       aria-hidden
     >
@@ -52,6 +53,7 @@ function Scene({ lite, onAircraftReady }: { lite: boolean; onAircraftReady?: () 
       <RouteLines curve={curve} />
       <StopMarkers />
       <Engravings />
+      <LandmarkModels />
       <HeroSkyline curve={curve} />
       <FlightRig curve={curve} onAircraftReady={onAircraftReady} />
     </>
@@ -87,6 +89,7 @@ function FlightRig({ curve, onAircraftReady }: { curve: THREE.CatmullRomCurve3; 
       set snap(v: boolean) { journey.snap = v; },
       scene,
       get intro() { return stage.intro; },
+      frames: () => stopFrames().map((f) => ({ plane: f.plane.toArray(), head: f.head.toArray(), side: f.side.toArray(), camSign: f.camSign, engraving: f.engraving.toArray() })),
       project: () => stopFrames().map((f, i) => {
         const c = f.engraving.clone().setY(12);
         const v = c.clone().project(camera);
@@ -100,7 +103,7 @@ function FlightRig({ curve, onAircraftReady }: { curve: THREE.CatmullRomCurve3; 
     const dt = Math.min(dtRaw, 1 / 20);
     // damp progress towards the scroll target (critically damped feel, no overshoot)
     const snap = first.current || journey.snap;
-    const k = 1 - Math.exp(-dt * 5.5);
+    const k = 1 - Math.exp(-dt * 3.2); // gentle catch-up: the aircraft glides rather than jumps
     journey.current += (journey.target - journey.current) * (snap ? 1 : k);
     if (Math.abs(journey.target - journey.current) < 1e-5) journey.current = journey.target;
     const p = journey.current;
