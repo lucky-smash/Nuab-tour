@@ -19,12 +19,14 @@ export default function GalleryPage() {
         </div>
       </PageHeader>
       <Section>
-        <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+        {/* A grid of fixed-ratio frames, not a multi-column masonry: Safari balances
+            columns differently (and again as lazy images load), so cards never lined up. */}
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {gallery.images.map((src, i) => (
-            <li key={src} className="mb-4 break-inside-avoid">
-              <a href={src} target="_blank" rel="noopener noreferrer" className="block">
+            <li key={src} className="min-w-0">
+              <a href={src} target="_blank" rel="noopener noreferrer" className="block aspect-[3/2] overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`Bike trip photograph ${i + 1}`} loading="lazy" className="w-full" />
+                <img src={src} alt={`Bike trip photograph ${i + 1}`} loading="lazy" decoding="async" className="block h-full w-full object-cover object-center" />
               </a>
             </li>
           ))}
