@@ -30,7 +30,10 @@ const { tris, box, dome, arch, beam, writeObj } = createMesh();
 const BANK_TOP = 7, DECK_Y = 8, TOWER_X = 30, TOP = 33, SPAN_HALF = 52;
 
 // ---- river and ghats ---------------------------------------------------------------------------
-box(-TOWER_X + 2, TOWER_X - 2, 0, 0.2, -16, 16, WATER);
+// the water runs from the foot of one ghat to the other (no faces shared with the steps) and stands
+// 0.8 deep, so its surface sits well clear of the contact shadow and route line on the atlas (no z-fighting)
+const STEPS_FOOT = 27 - 1.6 * 3;
+box(-STEPS_FOOT, STEPS_FOOT, 0, 0.8, -16, 16, WATER);
 for (const s of [-1, 1]) {
   const span = (a, b) => [Math.min(s * a, s * b), Math.max(s * a, s * b)];
   box(...span(27, 58), 0, BANK_TOP, -16, 16, STONE);
