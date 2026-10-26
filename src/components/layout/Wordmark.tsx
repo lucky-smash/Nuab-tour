@@ -1,17 +1,22 @@
 import { clsx } from "@/lib/site";
 
-/** NUAB Tourism wordmark: an engraved compass-meridian mark + editorial lettering. */
+/**
+ * NUAB Tourism logo: the client's original artwork (nuabtourism.in), on a transparent background so it
+ * sits on the sky, the white nav and the navy footer alike. `inverted` (navy footer) keeps NUAB red and
+ * turns TOURISM and the division line white, which the original blue cannot hold on navy.
+ */
 export function Wordmark({ className, inverted = false }: { className?: string; inverted?: boolean }) {
   return (
-    <span className={clsx("flex items-center gap-3", className)}>
-      <CompassMark className={clsx("size-9 shrink-0", inverted ? "text-white" : "text-navy")} />
-      <span className="flex flex-col leading-none">
-        <span className={clsx("font-display text-[1.45rem] tracking-[0.02em]", inverted ? "text-white" : "text-navy")} style={{ fontVariationSettings: '"opsz" 72, "SOFT" 0', fontWeight: 500 }}>
-          NUAB
-        </span>
-        <span className={clsx("mt-1 font-mono text-[0.58rem] tracking-[0.42em]", inverted ? "text-white/70" : "text-stone")}>TOURISM</span>
-      </span>
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element -- 252×125 PNG, no resizing to gain from next/image
+    <img
+      src={inverted ? "/brand/nuab-tourism-logo-light.png" : "/brand/nuab-tourism-logo.png"}
+      alt="NUAB Tourism — a division of NUAB Enterprises Pvt. Ltd."
+      width={252}
+      height={125}
+      decoding="async"
+      className={clsx("block h-[46px] w-auto select-none", className)}
+      draggable={false}
+    />
   );
 }
 
