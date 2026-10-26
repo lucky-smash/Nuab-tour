@@ -1,6 +1,6 @@
 import { formatCoord } from "@/lib/site";
 import region from "@/data/geo/region.json";
-import { PLANE_PATH } from "@/components/map/flights";
+import { PLANE_PATH } from "@/lib/plane";
 
 /**
  * Engraved navigational chart (equirectangular, 40°E–110°E × 0°–40°N) linking Delhi with the

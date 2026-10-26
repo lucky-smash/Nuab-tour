@@ -4,6 +4,8 @@ import "./globals.css";
 import { SiteNav } from "@/components/layout/SiteNav";
 import { Footer } from "@/components/layout/Footer";
 import { EnquiryProvider } from "@/components/ui/Enquiry";
+import { AirplaneScrollController } from "@/components/layout/AirplaneScrollController";
+import { InnerPlaneScroll } from "@/components/layout/InnerPlaneScroll";
 import { SITE } from "@/lib/site";
 
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", axes: ["opsz", "SOFT"], display: "swap" });
@@ -63,6 +65,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <AirplaneScrollController />
+          <InnerPlaneScroll />
         </EnquiryProvider>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
       </body>

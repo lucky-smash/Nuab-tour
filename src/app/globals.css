@@ -213,6 +213,59 @@ a.pill:hover, button.pill:hover { border-color: var(--color-navy); background: v
 .maplibregl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px !important; background: rgb(255 255 255 / .8) !important; }
 .maplibregl-ctrl-group { border-radius: 2px !important; box-shadow: none !important; border: 1px solid var(--color-line); }
 
+/* Airplane scroll controller (AirplaneScrollController.tsx): the page's scrollbar as a small
+   airliner on a dotted route. The native scrollbar is hidden only once the controller is mounted. */
+html.asc-on { scrollbar-width: none; }
+html.asc-on::-webkit-scrollbar { display: none; }
+html.asc-dragging, html.asc-dragging * { user-select: none !important; cursor: grabbing !important; }
+.asc { position: fixed; right: 0; bottom: 14px; top: 104px; z-index: 45; width: 44px; touch-action: none; transition: opacity .35s var(--ease-atlas); }
+.asc[data-empty], .asc[data-pending] { opacity: 0; pointer-events: none; }
+.asc-route, .asc-trail { position: absolute; left: 50%; top: 22px; bottom: 22px; width: 2px; margin-left: -1px; pointer-events: none; }
+.asc-route { background: radial-gradient(circle, rgb(131 129 119 / .55) 0.75px, transparent 1.25px) center top / 2px 6px repeat-y; }
+.asc-trail { background: repeating-linear-gradient(to bottom, var(--color-navy) 0 5px, transparent 5px 9px); width: 1.5px; margin-left: -0.75px; opacity: .85; }
+.asc-cap { position: absolute; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 999px; border: 1.25px solid var(--color-navy); background: var(--color-powder); pointer-events: none; }
+.asc-cap-top { top: 18.5px; background: var(--color-navy); }
+.asc-cap-bottom { bottom: 18.5px; }
+.asc-handle { position: absolute; left: 0; top: 0; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 999px; cursor: grab; outline: none; will-change: transform; }
+.asc-handle:focus-visible { box-shadow: inset 0 0 0 2px var(--color-navy), inset 0 0 0 4px #fff; }
+.asc-lift { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 999px; background: rgb(255 255 255 / .82); box-shadow: 0 0 0 1px rgb(35 58 80 / .12), 0 6px 14px -6px rgb(23 43 61 / .45); transition: transform .3s var(--ease-atlas), box-shadow .3s var(--ease-atlas), background-color .3s; }
+.asc-plane { fill: var(--color-navy); stroke: #fff; stroke-width: 2.6; stroke-linejoin: round; paint-order: stroke; transform: rotate(180deg); transition: transform .45s var(--ease-atlas); }
+.asc-handle:hover .asc-lift { transform: scale(1.12); }
+.asc[data-dragging] .asc-lift { transform: scale(1.18); background: #fff; box-shadow: 0 0 0 1px rgb(35 58 80 / .25), 0 0 0 7px rgb(35 58 80 / .08), 0 8px 18px -6px rgb(23 43 61 / .55); }
+.asc[data-dragging] .asc-plane { transition-duration: .2s; }
+.asc-label { position: absolute; right: 46px; top: 50%; translate: 0 -50%; white-space: nowrap; padding: 3px 7px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--color-navy); box-shadow: 0 6px 16px -8px rgb(23 43 61 / .6); opacity: 0; transform: translateX(6px); transition: opacity .25s, transform .25s var(--ease-atlas); pointer-events: none; }
+.asc-label:empty { display: none; }
+.asc[data-active] .asc-label, .asc[data-dragging] .asc-label, .asc-handle:hover .asc-label, .asc-handle:focus-visible .asc-label { opacity: 1; transform: none; }
+/* touch: no permanent control over the content; the plane shows while the page moves and can be caught then */
+@media (pointer: coarse) {
+  .asc { pointer-events: none; width: 40px; }
+  .asc-route, .asc-trail, .asc-cap, .asc-handle { opacity: 0; transition: opacity .3s; }
+  .asc[data-active] .asc-route, .asc[data-active] .asc-trail, .asc[data-active] .asc-cap, .asc[data-active] .asc-handle,
+  .asc[data-dragging] .asc-route, .asc[data-dragging] .asc-trail, .asc[data-dragging] .asc-cap, .asc[data-dragging] .asc-handle { opacity: 1; }
+  .asc[data-active] .asc-handle, .asc[data-dragging] .asc-handle { pointer-events: auto; }
+  .asc-handle { left: -2px; }
+}
+/* the same plane, smaller, over inner scrolling boxes (InnerPlaneScroll.tsx) */
+html.asc-on :is(.overflow-y-auto, [data-plane-scroll]):not([data-plane-scroll="off"]) { scrollbar-width: none; }
+html.asc-on :is(.overflow-y-auto, [data-plane-scroll]):not([data-plane-scroll="off"])::-webkit-scrollbar { display: none; }
+.asi { position: fixed; left: 0; top: 0; z-index: 55; width: 26px; touch-action: none; }
+.asi[data-empty] { display: none; }
+.asi-route, .asi-trail { position: absolute; left: 50%; top: 14px; bottom: 14px; pointer-events: none; }
+.asi-route { width: 2px; margin-left: -1px; background: radial-gradient(circle, rgb(131 129 119 / .5) 0.7px, transparent 1.15px) center top / 2px 5px repeat-y; }
+.asi-trail { width: 1.25px; margin-left: -0.625px; background: repeating-linear-gradient(to bottom, var(--color-navy) 0 4px, transparent 4px 7px); opacity: .8; }
+.asi-handle { position: absolute; left: -1px; top: 0; width: 28px; height: 28px; display: grid; place-items: center; cursor: grab; will-change: transform; }
+.asi-lift { display: grid; place-items: center; width: 21px; height: 21px; border-radius: 999px; background: rgb(255 255 255 / .9); box-shadow: 0 0 0 1px rgb(35 58 80 / .14), 0 4px 10px -5px rgb(23 43 61 / .45); transition: transform .3s var(--ease-atlas), box-shadow .3s var(--ease-atlas); }
+.asi-plane { fill: var(--color-navy); stroke: #fff; stroke-width: 2.6; stroke-linejoin: round; paint-order: stroke; transform: rotate(180deg); transition: transform .45s var(--ease-atlas); }
+.asi-handle:hover .asi-lift { transform: scale(1.12); }
+.asi[data-dragging] .asi-lift { transform: scale(1.18); background: #fff; box-shadow: 0 0 0 1px rgb(35 58 80 / .25), 0 0 0 5px rgb(35 58 80 / .08); }
+@media (pointer: coarse) {
+  .asi { pointer-events: none; }
+  .asi > * { opacity: 0; transition: opacity .3s; }
+  .asi[data-active] > *, .asi[data-dragging] > * { opacity: 1; }
+  .asi[data-active] .asi-handle, .asi[data-dragging] .asi-handle { pointer-events: auto; }
+}
+@media print { .asc, .asi { display: none; } }
+
 /* Tiles — open, hairline-bordered blocks with generous, even gaps. No fills and no shadows, so they read
    as part of the page rather than floating cards. Tiles in a row share one height, and a closing link
    (.tile-cta) is pinned to the bottom so the links line up across the row. */

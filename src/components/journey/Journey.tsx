@@ -390,7 +390,7 @@ function ArrivalPanel({ destinationCount, current }: { destinationCount: number;
 
 function ProgressRail({ stops, fill, current, onGo }: { stops: StopVM[]; fill: React.RefObject<HTMLDivElement | null>; current: string; onGo: (p: number) => void }) {
   return (
-    <nav aria-label="Journey stops" className="absolute right-4 top-1/2 hidden -translate-y-1/2 lg:block xl:right-8">
+    <nav aria-label="Journey stops" className="absolute right-16 top-1/2 hidden -translate-y-1/2 lg:block xl:right-20">
       <div className="relative h-[46svh] w-px bg-navy/15">
         <div ref={fill} className="absolute inset-x-0 top-0 h-full origin-top scale-y-0 bg-navy" />
         {stops.map((s) => (
