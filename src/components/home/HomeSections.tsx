@@ -12,7 +12,16 @@ import { WorldRoutes } from "./WorldRoutes";
 export function FeaturedTours() {
   return (
     <section id="tours" className="relative scroll-mt-20 overflow-hidden bg-ivory py-24 md:py-32" aria-labelledby="featured-tours">
-      <Engraving id="taj-mahal" className="pointer-events-none absolute -right-16 top-10 hidden w-[34rem] text-sand/45 xl:block" weight={1.3} />
+      {/* Taj Mahal elevation as a watermark behind the tours: half the page wide, resting on the section's
+          bottom edge under the right-hand column, very faint and fading out upwards and at the sides so
+          prices and titles keep full contrast */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 items-end justify-end lg:flex">
+        <Engraving
+          id="taj-mahal"
+          className="w-full text-sand/30 [mask-image:linear-gradient(to_bottom,transparent_0%,rgb(0_0_0/.6)_45%,#000_85%)]"
+          weight={1.3}
+        />
+      </div>
       <div className="container-x relative">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-end">
           <div>
