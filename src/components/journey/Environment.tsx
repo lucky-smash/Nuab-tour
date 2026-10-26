@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { journey, skyColors, rng, smoothstep, stage, stopFrames, cameraKey, type SkyState } from "./journeyMath";
+import { journey, skyColors, rng, smoothstep, stage, stopFrames, cameraKey, landmarkPosition, type SkyState } from "./journeyMath";
 import { ATLAS, STOPS, toWorld } from "./config";
 import { DESTINATION_SEEDS } from "@/data/destinations";
 import { formatCoord } from "@/lib/site";
@@ -172,7 +172,8 @@ export function Clouds({ curve, count }: { curve: THREE.Curve<THREE.Vector3>; co
       const f = stopFrames()[i];
       const c = cameraKey(st.p);
       const cam = f.plane.clone().addScaledVector(f.side, c.side).addScaledVector(f.head, -c.back);
-      return [{ a: new THREE.Vector2(f.engraving.x, f.engraving.z), b: new THREE.Vector2(cam.x, cam.z) }];
+      const at = landmarkPosition(i);
+      return [{ a: new THREE.Vector2(at.x, at.z), b: new THREE.Vector2(cam.x, cam.z) }];
     });
     const clearOfLandmarks = (pos: THREE.Vector3, size: number) => {
       const q = new THREE.Vector2(pos.x, pos.z);

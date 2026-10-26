@@ -28,7 +28,17 @@ export type JourneyStop = {
    * base on y = 0, height 1). `height` is in scene units; `yaw` (degrees) turns the model from the
    * default "main facade faces the camera" pose; `facade` is the model axis its main face looks along.
    */
-  model?: { url: string; height: number; yaw?: number; facade?: "+x" | "-x" | "+z" | "-z"; credit?: string };
+  model?: {
+    url: string;
+    height: number;
+    yaw?: number;
+    facade?: "+x" | "-x" | "+z" | "-z";
+    /** move the monument from the default engraving spot: `ahead` along the heading, `across` = distance from the flight line (default 34) */
+    offset?: { ahead?: number; across?: number };
+    /** also replace this monument's engraving on the hero skyline (default true) */
+    hero?: boolean;
+    credit?: string;
+  };
   photoId: string;
   intro: string;
   introSource: string;
@@ -78,6 +88,7 @@ export const STOPS: JourneyStop[] = [
     lng: 78.0421,
     destinationIds: ["agra", "fatehpur-sikri"],
     engraving: "taj-mahal",
+    model: { url: "/models/landmarks/taj-mahal.glb", height: 12, yaw: -8, facade: "+z", offset: { ahead: 18, across: 40 }, hero: false },
     photoId: "agra-taj-mahal",
     intro: intro("agra-same-day-tour-by-car"),
     introSource: "/agra-same-day-tour-by-car/",

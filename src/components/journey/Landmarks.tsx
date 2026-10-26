@@ -9,7 +9,7 @@ import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { getDrawing } from "@/components/engraving/drawings";
 import { STOPS, toWorld } from "./config";
-import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey, stage } from "./journeyMath";
+import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey, stage, landmarkPosition } from "./journeyMath";
 import { formatCoord } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
@@ -110,7 +110,8 @@ function LandmarkModel({ index }: { index: number }) {
     // camera position at the stop (desktop composition): look from the monument back to it
     const c = cameraKey(stop.p);
     const cam = f.plane.clone().addScaledVector(f.side, c.side).addScaledVector(f.head, -c.back);
-    const toCam = Math.atan2(cam.x - f.engraving.x, cam.z - f.engraving.z);
+    const at = landmarkPosition(index);
+    const toCam = Math.atan2(cam.x - at.x, cam.z - at.z);
     const rotY = toCam - FACADE_YAW[m.facade ?? "+z"] + ((m.yaw ?? 0) * Math.PI) / 180;
     const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
     const root = scene.clone(true);
@@ -120,13 +121,13 @@ function LandmarkModel({ index }: { index: number }) {
       if (!mesh.isMesh) return;
       const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
       mat.clippingPlanes = [clip];
-      mat.envMapIntensity = 0.55;
+      mat.envMapIntensity = mat.map ? 0.55 : 0.35; // untextured marble: shading from the baked AO + key light
       if (mat.map) mat.map.anisotropy = 8;
       mesh.material = mat;
       mats.push(mat);
     });
     const shadow = new THREE.MeshBasicMaterial({ map: contactShadowTexture(), transparent: true, depthWrite: false, opacity: 0 });
-    return { root, pos: f.engraving.clone(), rotY, clip, mats, shadow };
+    return { root, pos: at, rotY, clip, mats, shadow };
   }, [scene, index, stop.p, m.facade, m.yaw]);
   const group = useRef<THREE.Group>(null);
   useFrame(() => {
@@ -225,7 +226,9 @@ function heroView(curve: THREE.Curve<THREE.Vector3>) {
 
 /** A skyline monument that has a real model (taken from the stop that owns that engraving). */
 function heroModelFor(id: string) {
-  return STOPS.find((s) => s.engraving === id && s.model)?.model;
+  // hero: false keeps the line engraving there (e.g. the Taj sits behind the aircraft's fuselage in the
+  // hero composition; see-through linework reads there, a solid model would simply be hidden)
+  return STOPS.find((s) => s.engraving === id && s.model && s.model.hero !== false)?.model;
 }
 
 // Real models on the hero skyline: placed like the engravings (yaw/dist from the hero camera), sized

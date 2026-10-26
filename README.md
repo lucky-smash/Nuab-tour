@@ -29,7 +29,7 @@ npm test             # data-fidelity tests (vitest): prices, durations, links vs
 | `npm run data:extract` | Parses the archive into `src/data/generated/*.json`: tours, fares, itineraries, cabs, packages, blog, gallery and road trips. Never hand-edit these files. |
 | `npm run assets:fetch` | Downloads the company's own images into `public/media/wp/`. It also pulls CC-licensed Wikimedia Commons photographs into `public/media/commons/`, recording author and licence in `photos.json`. Credits are shown on every photo. |
 | `npm run model:convert` | Converts the client's `assets/source/3d-model.3ds` into `public/models/nuab-aircraft.glb`. |
-| `npm run model:landmark -- <obj> <texture> <out.glb>` | Converts a textured landmark model (OBJ + one texture image) into a compact GLB for the journey. |
+| `npm run model:landmark -- <obj> <out.glb> [options]` | Converts a landmark OBJ into a compact, meshopt-compressed GLB for the journey. Options: `--texture`, `--simplify`, `--crease`, `--ao` and more (listed at the top of `scripts/convert-landmark.mjs`). |
 
 The destination list is in `src/data/destinations.ts`. It holds stable ids and true coordinates, and it is the single source for the journey, the map, search and the directory. Descriptions and related offers on it are derived from the extracted data.
 
@@ -44,9 +44,11 @@ The destination list is in `src/data/destinations.ts`. It holds stable ids and t
 
 ## Landmark models
 
-Real 3D monuments can replace the line engravings, one stop at a time. India Gate at the Delhi stop is the first.
+Real 3D monuments can replace the line engravings, one stop at a time. India Gate stands at Delhi and the Taj Mahal at Agra.
 
 - **Source:** `india-gate-lowpoly-3d-model.zip`, supplied by the client. The zip stays in `assets/source/` locally and is not committed; its extracted files are. It is a low-poly OBJ (653 triangles) with one 2048 px photographic texture. The extracted files are in `assets/source/india-gate/`. Confirm that the model's licence allows use on a commercial website before launch; the archive carries no licence or author information.
+- **Taj Mahal source:** `taj-mahal.zip`, supplied by the client, kept locally in `assets/source/`; the extracted OBJ is in `assets/source/taj-mahal/`. It has 139k triangles and no texture or UVs. The converter simplifies it to 48.5k triangles, rebuilds smooth-with-crease normals and bakes ambient occlusion into vertex colours, which is what gives the untextured marble its depth. The result is a 1 MB GLB. As with India Gate, the archive carries no licence or author, so confirm the licence before launch.
+- **Taj Mahal placement:** it uses an `offset` to stand further ahead and further out than the default engraving spot, and the Agra camera is raised so the aircraft passes in front of the plinth. It sets `hero: false`, because in the hero composition it would sit behind the aircraft's fuselage; the line engraving stays there.
 - **Conversion:** `scripts/convert-landmark.mjs` centres the model on its base, scales it to a height of 1, converts the texture to WebP (keeping the alpha cut-outs for the Amar Jawan Jyoti rifles and finials) and writes a 274 KB GLB to `public/models/landmarks/india-gate.glb`.
 - **Hero:** any skyline monument with a model uses it instead of its engraving (`HeroLandmarkModels`, placed through `HERO_MODEL_PLACEMENT` in `Landmarks.tsx`).
 - **In the scene:** `LandmarkModels` in `src/components/journey/Landmarks.tsx` stands the model across from the aircraft, turned so its main arch faces the stop camera. It rises out of the atlas bottom-up as the aircraft approaches and sinks back in reverse. Clouds are kept off the monument and its sightline, and the stop's photo postcard is hidden because the model replaces it.
@@ -54,14 +56,19 @@ Real 3D monuments can replace the line engravings, one stop at a time. India Gat
 To add another monument:
 
 1. Put the zip in `assets/source/` and extract it into its own folder.
-2. Run the converter, for example:
+2. Run the converter. A textured model:
    ```bash
-   npm run model:landmark -- assets/source/taj/model.obj assets/source/taj/texture.png public/models/landmarks/taj-mahal.glb
+   npm run model:landmark -- assets/source/hawa-mahal/model.obj public/models/landmarks/hawa-mahal.glb --texture assets/source/hawa-mahal/texture.png
+   ```
+   An untextured, high-poly model (simplify, rebuild normals, bake shading):
+   ```bash
+   npm run model:landmark -- "assets/source/taj-mahal/Taj Mahal Low.obj" public/models/landmarks/taj-mahal.glb --simplify 0.35 --crease 40
    ```
 3. Add a `model` entry to that stop in `src/components/journey/config.ts`. `height` is in scene units, so 15 matches India Gate. `facade` is the model axis its main face looks along, and `yaw` fine-tunes the angle in degrees.
    ```ts
-   model: { url: "/models/landmarks/taj-mahal.glb", height: 15, facade: "+x", yaw: -24 },
+   model: { url: "/models/landmarks/hawa-mahal.glb", height: 15, facade: "+x", yaw: -24 },
    ```
+   Optional: `offset: { ahead, across }` moves it from the default spot, and `hero: false` keeps the line engraving on the hero skyline.
 
 ## How the scroll journey works
 

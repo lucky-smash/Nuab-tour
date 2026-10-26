@@ -116,6 +116,14 @@ export function stopFrames(): StopFrame[] {
   return _frames;
 }
 
+/** Where a stop's real landmark model stands: the engraving spot unless the model sets an offset. */
+export function landmarkPosition(i: number): THREE.Vector3 {
+  const f = stopFrames()[i];
+  const o = STOPS[i].model?.offset;
+  if (!o) return f.engraving.clone();
+  return new THREE.Vector3(f.plane.x, 0, f.plane.z).addScaledVector(f.side, -f.camSign * (o.across ?? 34)).addScaledVector(f.head, o.ahead ?? 6);
+}
+
 /** Which stop is "active" at progress p, and how strongly (0..1). */
 export function activeStop(p: number): { index: number; strength: number } {
   let index = -1, strength = 0;
@@ -144,7 +152,7 @@ export const CAM_KEYS: CamKey[] = [
   // opposite the landmark and the aircraft crosses in front of the engraving.
   K(0.105, 25, 9, 8, 3, 3.4, 38, 0.3, 0), // Delhi: high beam — the aircraft passes below the India Gate model beyond it; text left
   K(0.19, -7, 7.5, 26, 10, 0, 40, 0), // cruise chase
-  K(0.27, 25, 5, 8, 3, 3.2, 38, -0.3, 1), // Agra: text right, aircraft left
+  K(0.27, 25, 12, 8, 3, 4, 38, -0.3, 1), // Agra: text right, aircraft left; high beam so the aircraft passes below the Taj model
   K(0.37, 7, 8, 25, 10, 0, 40, 0),
   K(0.46, 25, 5, 8, 3, 3.2, 38, 0.3, 2), // Jaipur
   K(0.555, -7, 8, 25, 10, 0, 40, 0),
