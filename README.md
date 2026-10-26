@@ -44,11 +44,16 @@ The destination list is in `src/data/destinations.ts`. It holds stable ids and t
 
 ## Landmark models
 
-Real 3D monuments can replace the line engravings, one stop at a time. India Gate stands at Delhi and the Taj Mahal at Agra.
+Real 3D monuments can replace the line engravings, one stop at a time. India Gate stands at Delhi, the Taj Mahal at Agra and the Hawa Mahal at Jaipur.
 
 - **Source:** `india-gate-lowpoly-3d-model.zip`, supplied by the client. The zip stays in `assets/source/` locally and is not committed; its extracted files are. It is a low-poly OBJ (653 triangles) with one 2048 px photographic texture. The extracted files are in `assets/source/india-gate/`. Confirm that the model's licence allows use on a commercial website before launch; the archive carries no licence or author information.
-- **Taj Mahal source:** `taj-mahal.zip`, supplied by the client, kept locally in `assets/source/`; the extracted OBJ is in `assets/source/taj-mahal/`. It has 139k triangles and no texture or UVs. The converter simplifies it to 48.5k triangles, rebuilds smooth-with-crease normals and bakes ambient occlusion into vertex colours, which is what gives the untextured marble its depth. The result is a 1 MB GLB. As with India Gate, the archive carries no licence or author, so confirm the licence before launch.
+- **Taj Mahal source:** `taj-mahal.zip`, supplied by the client, kept locally in `assets/source/`; the extracted OBJ is in `assets/source/taj-mahal/`. It has 139k triangles and no texture or UVs. The converter simplifies it to 48.5k triangles, rebuilds smooth-with-crease normals and bakes ambient occlusion into vertex colours, which is what gives the untextured marble its depth. It uses a warm marble (`--color "#d9c6a6"`) and full-strength, slightly wider occlusion (`--ao-strength 1 --ao-radius 0.2`) so it doesn't wash out to white against the pale atlas. The result is a 1 MB GLB. As with India Gate, the archive carries no licence or author, so confirm the licence before launch.
 - **Taj Mahal placement:** it uses an `offset` to stand further ahead and further out than the default engraving spot, and the Agra camera is raised so the aircraft passes in front of the plinth. On the hero skyline it stands far behind the aircraft, larger and without haze, so its dome and minarets rise above the fuselage like a travel poster, with India Gate in front of it.
+- **Hawa Mahal:** no free model of usable quality was available, so it is generated in code by `scripts/build-hawa-mahal.mjs`. The model is stylised, not a survey: the street facade is built as a stepped pyramid of storeys, with rows of semi-hexagonal jharokhas (white-framed jali panels and domed caps), white lime cornices, an arcaded ground floor with the central gateway, and chhatris on the step corners. The colours are per-vertex (pink sandstone, white trim, dark lattice). The converter keeps them and multiplies them with baked occlusion, giving a 194 KB GLB of 11k triangles. Like the Taj, it stands further out than the engraving spot, with the Jaipur camera raised so the aircraft passes below it. It keeps the line engraving on the hero skyline (`hero: false`).
+  ```bash
+  node scripts/build-hawa-mahal.mjs .dev/hawa-mahal/hawa-mahal.obj
+  npm run model:landmark -- .dev/hawa-mahal/hawa-mahal.obj public/models/landmarks/hawa-mahal.glb --crease 32 --ao-strength 0.6
+  ```
 - **Conversion:** `scripts/convert-landmark.mjs` centres the model on its base, scales it to a height of 1, converts the texture to WebP (keeping the alpha cut-outs for the Amar Jawan Jyoti rifles and finials) and writes a 274 KB GLB to `public/models/landmarks/india-gate.glb`.
 - **Hero:** any skyline monument with a model uses it instead of its engraving (`HeroLandmarkModels`, placed through `HERO_MODEL_PLACEMENT` in `Landmarks.tsx`).
 - **In the scene:** `LandmarkModels` in `src/components/journey/Landmarks.tsx` stands the model across from the aircraft, turned so its main arch faces the stop camera. It rises out of the atlas bottom-up as the aircraft approaches and sinks back in reverse. Clouds are kept off the monument and its sightline, and the stop's photo postcard is hidden because the model replaces it.
@@ -58,21 +63,22 @@ To add another monument:
 1. Put the zip in `assets/source/` and extract it into its own folder.
 2. Run the converter. A textured model:
    ```bash
-   npm run model:landmark -- assets/source/hawa-mahal/model.obj public/models/landmarks/hawa-mahal.glb --texture assets/source/hawa-mahal/texture.png
+   npm run model:landmark -- assets/source/laxman-jhula/model.obj public/models/landmarks/laxman-jhula.glb --texture assets/source/laxman-jhula/texture.png
    ```
    An untextured, high-poly model (simplify, rebuild normals, bake shading):
    ```bash
-   npm run model:landmark -- "assets/source/taj-mahal/Taj Mahal Low.obj" public/models/landmarks/taj-mahal.glb --simplify 0.35 --crease 40
+   npm run model:landmark -- "assets/source/taj-mahal/Taj Mahal Low.obj" public/models/landmarks/taj-mahal.glb --simplify 0.35 --crease 40 --color "#d9c6a6" --ao-strength 1 --ao-radius 0.2
    ```
 3. Add a `model` entry to that stop in `src/components/journey/config.ts`. `height` is in scene units, so 15 matches India Gate. `facade` is the model axis its main face looks along, and `yaw` fine-tunes the angle in degrees.
    ```ts
-   model: { url: "/models/landmarks/hawa-mahal.glb", height: 15, facade: "+x", yaw: -24 },
+   model: { url: "/models/landmarks/laxman-jhula.glb", height: 15, facade: "+x", yaw: -24 },
    ```
    Optional: `offset: { ahead, across }` moves it from the default spot, and `hero: false` keeps the line engraving on the hero skyline.
 
 ## How the scroll journey works
 
 - **Hero scene:** the first viewport is a dawn flight above a cloud sea. A three-stop sky shader (zenith, sky blue, warm horizon) carries a sunrise glow placed behind the aircraft. A sunlit cloud deck dissolves as the journey begins. Engraved monuments line the horizon, and the real India Gate model rises out of the clouds beside the aircraft; it sinks back as the journey starts, just before the Delhi stop raises its own. A CSS twin of the sky (`.sky-hero`) paints instantly, before WebGL. The copy rises in about one second, and the aircraft glides into its composition in about 1.8 seconds. There is no blocking intro screen.
+- **Himalaya:** north of Haridwar–Rishikesh, the journey climbs over a low-poly 3D range (`Ridges` in `Environment.tsx`). It is a ridged-noise heightfield, flat-shaded and coloured by height and slope: sage foothills, slate rock faces, and snow above a noisy snowline. Under the flight route the terrain is held at least 7 units below the aircraft and the chase camera, blending back to full height 75 units out.
 - **Lighting:** a camera-relative warm key light, a sky and ground hemisphere fill, a sun rim light, and a soft reflection environment. Paint and metal finishes are tuned at runtime; the GLB itself is unchanged.
 
 - **Pace:** the journey section is 1020vh tall on desktop and 840vh on mobile, and the aircraft eases toward the scroll position with gentle damping, so it glides rather than jumps. Change the section height in `Journey.tsx` to make the whole flight faster or slower.

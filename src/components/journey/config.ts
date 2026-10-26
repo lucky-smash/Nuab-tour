@@ -106,6 +106,7 @@ export const STOPS: JourneyStop[] = [
     lng: 75.7873,
     destinationIds: ["jaipur"],
     engraving: "hawa-mahal",
+    model: { url: "/models/landmarks/hawa-mahal.glb", height: 13, facade: "+z", offset: { ahead: 16, across: 42 }, hero: false },
     photoId: "jaipur-hawa-mahal",
     intro: intro("jaipur-same-day-tour-by-car"),
     introSource: "/jaipur-same-day-tour-by-car/",

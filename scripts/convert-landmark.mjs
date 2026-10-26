@@ -17,6 +17,9 @@
 //   --ao-radius <n>      occlusion search distance relative to the model height (default 0.16)
 //   --ao-strength <n>    0..1 (default 0.85)
 //
+// OBJ vertex colours (`v x y z r g b`, sRGB 0..1) are kept and multiplied with the baked AO; the
+// material colour is then white unless --color is given.
+//
 // Output: base centred on the origin, sitting on y = 0, height = 1 (scale it in the scene), meshopt-
 // compressed (decoded by three's GLTFLoader / drei useGLTF). Prints the normalised footprint.
 import fs from "node:fs";
@@ -48,13 +51,16 @@ if (!objPath || !outPath) {
 }
 
 // ---- parse OBJ (fan-triangulated, non-indexed) ----------------------------------------------------
-const V = [], VT = [], VN = [];
-const P = [], UV = [], N = [];
+const V = [], VT = [], VN = [], VC = [];
+const P = [], UV = [], N = [], C = [];
 for (const raw of fs.readFileSync(objPath, "utf8").split(/\r?\n/)) {
   const line = raw.trim();
   if (!line || line.startsWith("#")) continue;
   const [tag, ...rest] = line.split(/\s+/);
-  if (tag === "v") V.push(rest.slice(0, 3).map(Number));
+  if (tag === "v") {
+    V.push(rest.slice(0, 3).map(Number));
+    VC.push(rest.length >= 6 ? rest.slice(3, 6).map(Number) : [1, 1, 1]);
+  }
   else if (tag === "vt") VT.push(rest.slice(0, 2).map(Number));
   else if (tag === "vn") VN.push(rest.slice(0, 3).map(Number));
   else if (tag === "f") {
@@ -66,6 +72,7 @@ for (const raw of fs.readFileSync(objPath, "utf8").split(/\r?\n/)) {
     for (let k = 1; k < corners.length - 1; k++) {
       for (const c of [corners[0], corners[k], corners[k + 1]]) {
         P.push(...V[c.v]);
+        C.push(...VC[c.v]);
         const t = c.t >= 0 ? VT[c.t] : [0, 0];
         UV.push(t[0], 1 - t[1]); // OBJ v-up -> glTF v-down
         N.push(...(c.n >= 0 ? VN[c.n] : [0, 1, 0]));
@@ -77,10 +84,19 @@ if (!P.length) throw new Error("no faces in " + objPath);
 const textured = !!texPath;
 if (textured && !VT.length) throw new Error("--texture given but the OBJ has no UVs");
 const srcTris = P.length / 9;
+const coloured = C.some((x) => x !== 1);
 
 let g = new THREE.BufferGeometry();
 g.setAttribute("position", new THREE.Float32BufferAttribute(P, 3));
 if (textured) g.setAttribute("uv", new THREE.Float32BufferAttribute(UV, 2));
+if (coloured) {
+  const lin = new THREE.Color();
+  for (let i = 0; i < C.length; i += 3) {
+    lin.setRGB(C[i], C[i + 1], C[i + 2], THREE.SRGBColorSpace); // -> linear (glTF COLOR_0)
+    C[i] = lin.r; C[i + 1] = lin.g; C[i + 2] = lin.b;
+  }
+  g.setAttribute("color", new THREE.Float32BufferAttribute(C, 3));
+}
 
 // ---- optional simplification + crease normals ---------------------------------------------------
 await MeshoptSimplifier.ready;
@@ -146,7 +162,13 @@ if (aoRays > 0) {
     aoColors[i * 3] = aoColors[i * 3 + 1] = aoColors[i * 3 + 2] = ao;
     sum += ao;
   }
+  if (coloured) {
+    const colA = g.getAttribute("color");
+    for (let i = 0; i < posA.count; i++) for (let k = 0; k < 3; k++) aoColors[i * 3 + k] *= colA.getComponent(i, k);
+  }
   console.log(`ambient occlusion: ${posA.count} vertices x ${aoRays} rays in ${((Date.now() - t0) / 1000).toFixed(1)} s, mean ${(sum / posA.count).toFixed(2)}`);
+} else if (coloured) {
+  aoColors = new Float32Array(g.getAttribute("color").array);
 }
 
 // ---- texture -> WebP -----------------------------------------------------------------------------
@@ -169,7 +191,7 @@ if (textured) {
   const tex = doc.createTexture(name + "-albedo").setImage(new Uint8Array(webp)).setMimeType("image/webp");
   mat.setBaseColorTexture(tex).setRoughnessFactor(+opt("roughness", 0.86)).setAlphaMode("MASK").setAlphaCutoff(0.5).setDoubleSided(true);
 } else {
-  const c = new THREE.Color(opt("color", "#e8ddca")); // sRGB hex -> linear factors
+  const c = new THREE.Color(opt("color", coloured ? "#ffffff" : "#e8ddca")); // sRGB hex -> linear factors
   mat.setBaseColorFactor([c.r, c.g, c.b, 1]).setRoughnessFactor(+opt("roughness", 0.75));
 }
 const prim = doc

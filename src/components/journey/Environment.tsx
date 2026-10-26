@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { journey, skyColors, rng, smoothstep, stage, stopFrames, cameraKey, landmarkPosition, type SkyState } from "./journeyMath";
+import { journey, skyColors, rng, smoothstep, stage, stopFrames, cameraKey, landmarkPosition, getCurve, type SkyState } from "./journeyMath";
 import { ATLAS, STOPS, toWorld } from "./config";
 import { DESTINATION_SEEDS } from "@/data/destinations";
 import { formatCoord } from "@/lib/site";
@@ -546,42 +546,98 @@ export function AtlasGround({ lite }: { lite: boolean }) {
 }
 
 // ---------------------------------------------------------------------------
-// Himalayan foothill ridges north of Haridwar–Rishikesh (low-poly, fog-softened)
+// Himalaya north of Haridwar–Rishikesh: a low-poly heightfield of ridged noise rising from sage
+// foothills to snow-capped slate peaks, flat-shaded and lit like the monuments, softened by the fog.
+// Under the flight route the terrain is held below the aircraft (and the chase camera behind it).
 // ---------------------------------------------------------------------------
+const MOUNTAINS = { x0: -260, x1: 420, z0: -128, z1: -430, cell: 6 };
+
+function valueNoise(x: number, z: number) {
+  const h = (i: number, j: number) => { const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return s - Math.floor(s); };
+  const i = Math.floor(x), j = Math.floor(z), fx = x - i, fz = z - j;
+  const u = fx * fx * (3 - 2 * fx), v = fz * fz * (3 - 2 * fz);
+  return (h(i, j) * (1 - u) + h(i + 1, j) * u) * (1 - v) + (h(i, j + 1) * (1 - u) + h(i + 1, j + 1) * u) * v;
+}
+/** ridged fBm in 0..1: sharp crests, soft valleys */
+function ridged(x: number, z: number) {
+  let sum = 0, amp = 0.55, f = 1, norm = 0;
+  for (let o = 0; o < 4; o++) {
+    const r = 1 - Math.abs(2 * valueNoise(x * f + o * 17.3, z * f - o * 9.1) - 1);
+    sum += amp * r * r;
+    norm += amp;
+    amp *= 0.5;
+    f *= 2.07;
+  }
+  return sum / norm;
+}
+
 export function Ridges() {
-  const meshes = useMemo(() => {
-    const out: { geo: THREE.BufferGeometry; color: string; z: number }[] = [];
-    const layers = [
-      { z: -150, h: 7, color: "#c9d6e3" },
-      { z: -185, h: 13, color: "#bccbdb" },
-      { z: -225, h: 22, color: "#b2c3d5" },
-      { z: -275, h: 34, color: "#a9bccf" },
-    ];
-    layers.forEach((L, li) => {
-      const r = rng(100 + li);
-      const seg = 120;
-      const geo = new THREE.PlaneGeometry(420, 1, seg, 1);
-      const pos = geo.attributes.position as THREE.BufferAttribute;
-      const phase = r() * 10;
-      for (let i = 0; i <= seg; i++) {
-        const x = -210 + (420 * i) / seg;
-        const n = 0.55 * Math.sin(x * 0.045 + phase) + 0.3 * Math.sin(x * 0.11 + phase * 2) + 0.15 * Math.sin(x * 0.29 + phase * 3);
-        const top = L.h * (0.75 + 0.45 * n) * (1 + Math.max(0, (x - 0) / 400));
-        pos.setXYZ(i, x, top, 0); // top row
-        pos.setXYZ(i + seg + 1, x, -2, 0); // bottom row
+  const geo = useMemo(() => {
+    const M = MOUNTAINS;
+    const r = rng(311);
+    // route samples over the north leg: horizontal position and altitude
+    const curve = getCurve();
+    const route: THREE.Vector3[] = [];
+    for (let i = 0; i <= 240; i++) {
+      const q = curve.getPointAt(i / 240);
+      if (q.z < M.z0 + 40) route.push(q);
+    }
+    const nx = Math.round((M.x1 - M.x0) / M.cell), nz = Math.round((M.z0 - M.z1) / M.cell);
+    const heightAt = (x: number, z: number) => {
+      const north = Math.min(1, Math.max(0, (M.z0 - 8 - z) / 250));
+      const amp = 3 + 78 * Math.pow(north, 1.5);
+      let h = amp * (0.25 + 0.75 * ridged(x * 0.013, z * 0.013)) - 2.5 * (1 - north);
+      h *= smoothstep(M.z0, M.z0 - 22, z); // meet the atlas along the southern edge
+      // clear of the aircraft: below its altitude near the route, freely above it 75 units out
+      let best = Infinity, alt = 0;
+      for (const q of route) {
+        const d = (q.x - x) ** 2 + (q.z - z) ** 2;
+        if (d < best) { best = d; alt = q.y; }
       }
-      geo.computeVertexNormals();
-      out.push({ geo, color: L.color, z: L.z });
-    });
-    return out;
+      const cap = alt - 7;
+      if (h > cap) h = cap + (h - cap) * smoothstep(28, 75, Math.sqrt(best));
+      return h;
+    };
+    // jittered grid -> low-poly facets
+    const P: THREE.Vector3[] = [];
+    for (let j = 0; j <= nz; j++)
+      for (let i = 0; i <= nx; i++) {
+        const edge = i === 0 || j === 0 || i === nx || j === nz;
+        const x = M.x0 + i * M.cell + (edge ? 0 : (r() - 0.5) * M.cell * 0.7);
+        const z = M.z0 - j * M.cell + (edge ? 0 : (r() - 0.5) * M.cell * 0.7);
+        P.push(new THREE.Vector3(x, heightAt(x, z), z));
+      }
+    const pos: number[] = [], col: number[] = [];
+    const c = new THREE.Color();
+    const SAGE = new THREE.Color("#9cab95"), SLATE = new THREE.Color("#7a8796"), DARK = new THREE.Color("#5c6776"), SNOW = new THREE.Color("#f6f8fa");
+    const e1 = new THREE.Vector3(), e2 = new THREE.Vector3(), n = new THREE.Vector3();
+    const face = (a: THREE.Vector3, b: THREE.Vector3, d: THREE.Vector3) => {
+      const top = Math.max(a.y, b.y, d.y);
+      if (top < 0.05) return; // flat at/below the atlas: leave the map visible
+      n.crossVectors(e1.subVectors(b, a), e2.subVectors(d, a)).normalize();
+      if (n.y < 0) { const t = b; b = d; d = t; n.negate(); }
+      const y = (a.y + b.y + d.y) / 3;
+      const steep = 1 - n.y; // 0 flat .. 1 vertical
+      c.copy(SAGE).lerp(SLATE, smoothstep(6, 26, y)).lerp(DARK, smoothstep(0.25, 0.6, steep) * smoothstep(10, 30, y));
+      const snowline = 47 + 10 * valueNoise(a.x * 0.05, a.z * 0.05) + 30 * steep;
+      c.lerp(SNOW, smoothstep(snowline - 3, snowline + 3, y));
+      for (const v of [a, b, d]) { pos.push(v.x, v.y, v.z); col.push(c.r, c.g, c.b); }
+    };
+    const at = (i: number, j: number) => P[j * (nx + 1) + i];
+    for (let j = 0; j < nz; j++)
+      for (let i = 0; i < nx; i++) {
+        face(at(i, j), at(i + 1, j), at(i + 1, j + 1));
+        face(at(i, j), at(i + 1, j + 1), at(i, j + 1));
+      }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+    g.computeVertexNormals(); // non-indexed: one normal per facet
+    return g;
   }, []);
   return (
-    <group position={[40, 0, 0]}>
-      {meshes.map((m, i) => (
-        <mesh key={i} geometry={m.geo} position={[0, 0, m.z]}>
-          <meshBasicMaterial color={m.color} fog side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-    </group>
+    <mesh geometry={geo} name="himalaya">
+      <meshStandardMaterial vertexColors flatShading roughness={0.95} metalness={0} envMapIntensity={0.4} fog />
+    </mesh>
   );
 }
