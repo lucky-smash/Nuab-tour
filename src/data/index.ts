@@ -113,6 +113,29 @@ export type Photo = { id: string; src: string; srcSet: string; width: number; he
 export const photos = photosJson as unknown as Record<string, Photo>;
 export const photo = (id?: string | null): Photo | undefined => (id ? photos[id] : undefined);
 
+/**
+ * International packages the company site publishes without a photograph: a CC-licensed Commons
+ * photo of the place that itinerary is about (credited wherever it is shown).
+ */
+const PACKAGE_PHOTO: Record<string, string> = {
+  "atlantis-fun-filled-moments": "dubai-atlantis",
+  "discover-abu-dhabi-yas-islands": "abu-dhabi-yas",
+  "discover-dubai": "dubai-creek",
+  "dubai-with-sea-plane": "dubai-palm-jumeirah",
+  "luxury-dubai": "dubai-burj-al-arab",
+  "amazing-northern-highlight": "chiang-rai",
+  "discover-the-southern": "koh-samui-big-buddha",
+  "full-moon-party-koh-samui": "koh-phangan",
+  "magical-bangkok-pattaya": "pattaya-bay",
+  "magical-koh-samui": "koh-samui",
+};
+/** The image a package card or page shows: the company's own photo, else its place photo. */
+export function packageImage(p: Pick<IntlPackage, "slug" | "title" | "image">): { src: string; srcSet?: string; alt: string; credit: Photo | null } | null {
+  if (p.image) return { src: p.image, alt: p.title, credit: null };
+  const ph = photo(PACKAGE_PHOTO[p.slug]);
+  return ph ? { src: ph.src, srcSet: ph.srcSet, alt: ph.alt || p.title, credit: ph } : null;
+}
+
 export type BlogPost = { title: string; slug: string; path: string; seoTitle?: string; metaDescription?: string; published?: string; excerpt: string; image: string | null; readingMinutes: number; html: string };
 export const blogPosts = blog.posts as unknown as BlogPost[];
 

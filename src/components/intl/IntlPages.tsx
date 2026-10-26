@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
-import { intlLandings, intlPackages, photo, type IntlPackage } from "@/data";
+import { intlLandings, intlPackages, packageImage, photo, type IntlPackage } from "@/data";
 import { CheckList, FaqList, LinkRows, PageHeader, Section } from "@/components/page/Blocks";
 import { EnquireButton } from "@/components/ui/Enquiry";
 import { whatsappLink } from "@/lib/site";
@@ -52,12 +52,16 @@ export function IntlLandingPage({ country }: { country: "dubai" | "thailand" }) 
 }
 
 function PackageCard({ p }: { p: IntlPackage }) {
+  const img = packageImage(p);
   return (
     <li className="tile tile-link">
       <Link href={p.path} className="group flex h-full flex-col">
-        {p.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.image} alt={p.title} loading="lazy" className="tile-media aspect-[16/9]" />
+        {img ? (
+          <span className="relative block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1280px) 30vw, (min-width: 768px) 46vw, 100vw" alt={img.alt} loading="lazy" className="tile-media aspect-[16/9]" />
+            {img.credit && <span className="absolute bottom-1.5 right-2 max-w-[80%] truncate font-mono text-[0.55rem] uppercase tracking-wide text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0/.6)]">{img.credit.author} · {img.credit.license}</span>}
+          </span>
         ) : (
           <div className="flex aspect-[16/9] w-full items-center justify-center border-b border-line bg-powder/40 font-display text-2xl italic text-navy/60">{p.places.join(" · ")}</div>
         )}
@@ -74,6 +78,10 @@ function PackageCard({ p }: { p: IntlPackage }) {
 
 export function PackagePage({ p }: { p: IntlPackage }) {
   const C = COUNTRY[p.country];
+  // the company's photo, else this itinerary's own place, else the country photo
+  const own = packageImage(p);
+  const countryPh = photo(C.heroPhoto);
+  const hero = own ?? (countryPh ? { src: countryPh.src, alt: countryPh.alt || C.name, credit: countryPh } : null);
   const siblings = intlPackages.filter((x) => x.country === p.country && x.slug !== p.slug);
   return (
     <>
@@ -83,9 +91,9 @@ export function PackagePage({ p }: { p: IntlPackage }) {
         eyebrow={`Holiday package · ${p.duration ?? `${p.days} days`}`}
         title={p.title}
         lede={p.metaDescription}
-        image={p.image ?? photo(C.heroPhoto)?.src ?? null}
-        imageAlt={p.image ? p.title : photo(C.heroPhoto)?.alt ?? C.name}
-        imageCredit={!p.image && photo(C.heroPhoto) ? { text: `Photo: ${photo(C.heroPhoto)!.author} · ${photo(C.heroPhoto)!.license}`, href: photo(C.heroPhoto)!.sourceUrl } : null}
+        image={hero?.src ?? null}
+        imageAlt={hero?.alt ?? C.name}
+        imageCredit={hero?.credit ? { text: `Photo: ${hero.credit.author} · ${hero.credit.license}`, href: hero.credit.sourceUrl } : null}
       >
         <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
           <li className="flex items-center gap-2"><Clock className="size-4 text-stone" aria-hidden /> {p.duration ?? `${p.days} days`}</li>

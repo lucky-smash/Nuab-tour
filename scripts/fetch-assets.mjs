@@ -95,6 +95,38 @@ const TOPICS = {
   "phuket": "Phuket",
   "chiang-mai-doi-suthep": "Wat Phra That Doi Suthep",
   "koh-samui": "Ko Samui",
+  // destinations that had no photograph of their own (exact File: titles where free-text search
+  // returned another place or subject: Quebec City for Dalhousie, a manuscript page for Jammu, …)
+  "gokul": "Gokul Mathura temple",
+  "govardhan": "Govardhan Mansi Ganga",
+  "nandgaon": "File:नंदगाँव का एक दृश्य.JPG",
+  "fatehpur-sikri": "Buland Darwaza Fatehpur Sikri",
+  "dhanaulti": "Dhanaulti",
+  "chakrata": "Chakrata",
+  "chopta": "Chopta Uttarakhand",
+  "jim-corbett": "File:Elephants@JimCorbettNationalParkIndia.jpg",
+  "ramnagar": "Kosi River Ramnagar",
+  "lansdowne": "File:Lansdowne in monsoon.jpg",
+  "pauri-garhwal": "Pauri Garhwal",
+  "kasauli": "File:Kasauli hills.jpg",
+  "kasol": "Kasol Parvati",
+  "mcleodganj": "File:Residential neighborhoods of Dharamsala on the background of the Himalayas.jpg",
+  "dalhousie": "File:Dalhousie mountain view.jpg",
+  "bir-billing": "Bir Billing paragliding",
+  "palampur": "Palampur tea garden",
+  "nahan": "Nahan Himachal",
+  "paonta-sahib": "Gurudwara Paonta Sahib",
+  "jammu": "File:Bahu Fort, Jammu.jpg",
+  "koh-phangan": "Ko Pha Ngan beach",
+  "chiang-rai": "Wat Rong Khun",
+  // international packages without a company photograph: the place the itinerary is about
+  "dubai-atlantis": "Atlantis The Palm Dubai",
+  "abu-dhabi-yas": "File:Yas Bay Waterfront, Yas Island, Abu Dhabi.jpg",
+  "dubai-creek": "File:Arabic dhow on Dubai Creek.jpg",
+  "dubai-palm-jumeirah": "File:Palm Jumeirah from Dubai Marina.jpg",
+  "dubai-burj-al-arab": "Burj Al Arab",
+  "koh-samui-big-buddha": "File:Koh Samui, Big Buddha 01.jpg",
+  "pattaya-bay": "Pattaya beach",
 };
 
 const strip = (s) => (s || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();

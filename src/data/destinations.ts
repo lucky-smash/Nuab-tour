@@ -55,11 +55,11 @@ export const DESTINATION_SEEDS: DestinationSeed[] = [
   S({ id: "rishikesh", name: "Rishikesh", region: "Uttarakhand", country: "India", lat: 30.0869, lng: 78.2676, themes: ["spiritual", "adventure", "nature"], match: ["Laxman Jhula", "Lakshman Jhula", "Ram Jhula", "Triveni Ghat"], photo: "rishikesh-laxman-jhula" }),
 
   // --- Braj circuit & Golden Triangle stops (multi-day packages)
-  S({ id: "gokul", name: "Gokul", region: "Uttar Pradesh", country: "India", lat: 27.4396, lng: 77.7205, themes: ["spiritual"], match: ["Nand Bhawan", "Raman Reti", "Brahmand Ghat"] }),
-  S({ id: "govardhan", name: "Govardhan", region: "Uttar Pradesh", country: "India", lat: 27.4966, lng: 77.4636, themes: ["spiritual"], match: ["Goverdhan", "Radha Kund", "Kusum Sarovar", "Parikrama"] }),
+  S({ id: "gokul", name: "Gokul", region: "Uttar Pradesh", country: "India", lat: 27.4396, lng: 77.7205, themes: ["spiritual"], match: ["Nand Bhawan", "Raman Reti", "Brahmand Ghat"], photo: "gokul" }),
+  S({ id: "govardhan", name: "Govardhan", region: "Uttar Pradesh", country: "India", lat: 27.4966, lng: 77.4636, themes: ["spiritual"], match: ["Goverdhan", "Radha Kund", "Kusum Sarovar", "Parikrama"], photo: "govardhan" }),
   S({ id: "barsana", name: "Barsana", region: "Uttar Pradesh", country: "India", lat: 27.649, lng: 77.378, themes: ["spiritual"], match: ["Radha Rani", "Rangili Mahal"], image: "/media/wp/2026/07/BARSANA.jpg" }),
-  S({ id: "nandgaon", name: "Nandgaon", region: "Uttar Pradesh", country: "India", lat: 27.714, lng: 77.388, themes: ["spiritual"], match: ["Pavan Sarovar"] }),
-  S({ id: "fatehpur-sikri", name: "Fatehpur Sikri", region: "Uttar Pradesh", country: "India", lat: 27.0945, lng: 77.6679, themes: ["heritage"], match: ["Buland Darwaza", "Panch Mahal"] }),
+  S({ id: "nandgaon", name: "Nandgaon", region: "Uttar Pradesh", country: "India", lat: 27.714, lng: 77.388, themes: ["spiritual"], match: ["Pavan Sarovar"], photo: "nandgaon" }),
+  S({ id: "fatehpur-sikri", name: "Fatehpur Sikri", region: "Uttar Pradesh", country: "India", lat: 27.0945, lng: 77.6679, themes: ["heritage"], match: ["Buland Darwaza", "Panch Mahal"], photo: "fatehpur-sikri" }),
 
   // --- Road-trip guides (Bike Trips › Destinations)
   S({ id: "garh-mukteshwar", name: "Garh Mukteshwar", region: "Uttar Pradesh", country: "India", lat: 28.7867, lng: 78.1053, themes: ["spiritual", "nature"] }),
@@ -78,31 +78,31 @@ export const DESTINATION_SEEDS: DestinationSeed[] = [
   // --- Outstation cabs: Uttarakhand
   S({ id: "dehradun", name: "Dehradun", region: "Uttarakhand", country: "India", lat: 30.3165, lng: 78.0322, themes: ["hills", "city"] }),
   S({ id: "mussoorie", name: "Mussoorie", region: "Uttarakhand", country: "India", lat: 30.4598, lng: 78.0644, themes: ["hills"], photo: "mussoorie" }),
-  S({ id: "dhanaulti", name: "Dhanaulti", region: "Uttarakhand", country: "India", lat: 30.428, lng: 78.242, themes: ["hills", "nature"] }),
-  S({ id: "chakrata", name: "Chakrata", region: "Uttarakhand", country: "India", lat: 30.7015, lng: 77.869, themes: ["hills", "nature"] }),
-  S({ id: "chopta", name: "Chopta", sourceName: "Chhota", region: "Uttarakhand", country: "India", lat: 30.4867, lng: 79.2117, themes: ["hills", "adventure"], match: ["Chhota"] }),
+  S({ id: "dhanaulti", name: "Dhanaulti", region: "Uttarakhand", country: "India", lat: 30.428, lng: 78.242, themes: ["hills", "nature"], photo: "dhanaulti" }),
+  S({ id: "chakrata", name: "Chakrata", region: "Uttarakhand", country: "India", lat: 30.7015, lng: 77.869, themes: ["hills", "nature"], photo: "chakrata" }),
+  S({ id: "chopta", name: "Chopta", sourceName: "Chhota", region: "Uttarakhand", country: "India", lat: 30.4867, lng: 79.2117, themes: ["hills", "adventure"], match: ["Chhota"], photo: "chopta" }),
   S({ id: "nainital", name: "Nainital", region: "Uttarakhand", country: "India", lat: 29.3803, lng: 79.4636, themes: ["hills"], photo: "nainital" }),
   S({ id: "mukteshwar", name: "Mukteshwar", region: "Uttarakhand", country: "India", lat: 29.4722, lng: 79.645, themes: ["hills"] }),
-  S({ id: "jim-corbett", name: "Jim Corbett", region: "Uttarakhand", country: "India", lat: 29.549, lng: 78.935, themes: ["nature"] }),
-  S({ id: "ramnagar", name: "Ramnagar", region: "Uttarakhand", country: "India", lat: 29.3947, lng: 79.1265, themes: ["nature"] }),
-  S({ id: "lansdowne", name: "Lansdowne", region: "Uttarakhand", country: "India", lat: 29.8377, lng: 78.6871, themes: ["hills"] }),
-  S({ id: "pauri-garhwal", name: "Pauri Garhwal", region: "Uttarakhand", country: "India", lat: 30.152, lng: 78.78, themes: ["hills"] }),
+  S({ id: "jim-corbett", name: "Jim Corbett", region: "Uttarakhand", country: "India", lat: 29.549, lng: 78.935, themes: ["nature"], photo: "jim-corbett" }),
+  S({ id: "ramnagar", name: "Ramnagar", region: "Uttarakhand", country: "India", lat: 29.3947, lng: 79.1265, themes: ["nature"], photo: "ramnagar" }),
+  S({ id: "lansdowne", name: "Lansdowne", region: "Uttarakhand", country: "India", lat: 29.8377, lng: 78.6871, themes: ["hills"], photo: "lansdowne" }),
+  S({ id: "pauri-garhwal", name: "Pauri Garhwal", region: "Uttarakhand", country: "India", lat: 30.152, lng: 78.78, themes: ["hills"], photo: "pauri-garhwal" }),
 
   // --- Outstation cabs: Himachal Pradesh
   S({ id: "shimla", name: "Shimla", region: "Himachal Pradesh", country: "India", lat: 31.1048, lng: 77.1734, themes: ["hills"], photo: "shimla" }),
-  S({ id: "kasauli", name: "Kasauli", region: "Himachal Pradesh", country: "India", lat: 30.8986, lng: 76.9658, themes: ["hills"] }),
+  S({ id: "kasauli", name: "Kasauli", region: "Himachal Pradesh", country: "India", lat: 30.8986, lng: 76.9658, themes: ["hills"], photo: "kasauli" }),
   S({ id: "manali", name: "Manali", region: "Himachal Pradesh", country: "India", lat: 32.2432, lng: 77.1892, themes: ["hills", "adventure"], photo: "manali" }),
-  S({ id: "kasol", name: "Kasol", region: "Himachal Pradesh", country: "India", lat: 32.0099, lng: 77.315, themes: ["hills", "nature"] }),
+  S({ id: "kasol", name: "Kasol", region: "Himachal Pradesh", country: "India", lat: 32.0099, lng: 77.315, themes: ["hills", "nature"], photo: "kasol" }),
   S({ id: "dharamshala", name: "Dharamshala", region: "Himachal Pradesh", country: "India", lat: 32.219, lng: 76.3234, themes: ["hills", "spiritual"], photo: "dharamshala" }),
-  S({ id: "mcleodganj", name: "Mcleodganj", region: "Himachal Pradesh", country: "India", lat: 32.2426, lng: 76.3213, themes: ["hills", "spiritual"] }),
-  S({ id: "dalhousie", name: "Dalhousie", region: "Himachal Pradesh", country: "India", lat: 32.5387, lng: 75.971, themes: ["hills"] }),
-  S({ id: "bir-billing", name: "Bir Billing", region: "Himachal Pradesh", country: "India", lat: 32.0384, lng: 76.7234, themes: ["adventure", "hills"] }),
-  S({ id: "palampur", name: "Palampur", region: "Himachal Pradesh", country: "India", lat: 32.1109, lng: 76.5363, themes: ["hills", "nature"] }),
-  S({ id: "nahan", name: "Nahan", region: "Himachal Pradesh", country: "India", lat: 30.5596, lng: 77.2961, themes: ["hills"] }),
-  S({ id: "paonta-sahib", name: "Paonta Sahib", region: "Himachal Pradesh", country: "India", lat: 30.4384, lng: 77.6241, themes: ["spiritual"] }),
+  S({ id: "mcleodganj", name: "Mcleodganj", region: "Himachal Pradesh", country: "India", lat: 32.2426, lng: 76.3213, themes: ["hills", "spiritual"], photo: "mcleodganj" }),
+  S({ id: "dalhousie", name: "Dalhousie", region: "Himachal Pradesh", country: "India", lat: 32.5387, lng: 75.971, themes: ["hills"], photo: "dalhousie" }),
+  S({ id: "bir-billing", name: "Bir Billing", region: "Himachal Pradesh", country: "India", lat: 32.0384, lng: 76.7234, themes: ["adventure", "hills"], photo: "bir-billing" }),
+  S({ id: "palampur", name: "Palampur", region: "Himachal Pradesh", country: "India", lat: 32.1109, lng: 76.5363, themes: ["hills", "nature"], photo: "palampur" }),
+  S({ id: "nahan", name: "Nahan", region: "Himachal Pradesh", country: "India", lat: 30.5596, lng: 77.2961, themes: ["hills"], photo: "nahan" }),
+  S({ id: "paonta-sahib", name: "Paonta Sahib", region: "Himachal Pradesh", country: "India", lat: 30.4384, lng: 77.6241, themes: ["spiritual"], photo: "paonta-sahib" }),
 
   // --- Outstation cabs: Jammu & Kashmir
-  S({ id: "jammu", name: "Jammu", region: "Jammu & Kashmir", country: "India", lat: 32.7266, lng: 74.857, themes: ["city", "spiritual"] }),
+  S({ id: "jammu", name: "Jammu", region: "Jammu & Kashmir", country: "India", lat: 32.7266, lng: 74.857, themes: ["city", "spiritual"], photo: "jammu" }),
   S({ id: "katra", name: "Katra", region: "Jammu & Kashmir", country: "India", lat: 32.9916, lng: 74.9318, themes: ["spiritual"], photo: "katra-vaishno-devi" }),
   S({ id: "vaishno-devi", name: "Vaishno Devi", region: "Jammu & Kashmir", country: "India", lat: 33.0308, lng: 74.949, themes: ["spiritual", "hills"], photo: "katra-vaishno-devi" }),
 
@@ -118,10 +118,10 @@ export const DESTINATION_SEEDS: DestinationSeed[] = [
   S({ id: "phuket", name: "Phuket", region: "Thailand", country: "Thailand", lat: 7.8804, lng: 98.3923, themes: ["beach"], photo: "phuket" }),
   S({ id: "krabi", name: "Krabi", region: "Thailand", country: "Thailand", lat: 8.0863, lng: 98.9063, themes: ["beach", "adventure"], photo: "krabi-railay" }),
   S({ id: "koh-samui", name: "Koh Samui", region: "Thailand", country: "Thailand", lat: 9.512, lng: 100.0136, themes: ["beach"], photo: "koh-samui" }),
-  S({ id: "koh-phangan", name: "Koh Phangan", region: "Thailand", country: "Thailand", lat: 9.738, lng: 100.015, themes: ["beach"] }),
+  S({ id: "koh-phangan", name: "Koh Phangan", region: "Thailand", country: "Thailand", lat: 9.738, lng: 100.015, themes: ["beach"], photo: "koh-phangan" }),
   S({ id: "hua-hin", name: "Hua Hin", region: "Thailand", country: "Thailand", lat: 12.5684, lng: 99.9577, themes: ["beach"] }),
   S({ id: "chiang-mai", name: "Chiang Mai", region: "Thailand", country: "Thailand", lat: 18.7883, lng: 98.9853, themes: ["heritage", "nature"], match: ["Chinag Mai"], photo: "chiang-mai-doi-suthep" }),
-  S({ id: "chiang-rai", name: "Chiang Rai", region: "Thailand", country: "Thailand", lat: 19.9105, lng: 99.8406, themes: ["heritage", "nature"], match: ["Golden Triangle Tour"] }),
+  S({ id: "chiang-rai", name: "Chiang Rai", region: "Thailand", country: "Thailand", lat: 19.9105, lng: 99.8406, themes: ["heritage", "nature"], match: ["Golden Triangle Tour"], photo: "chiang-rai" }),
 ];
 
 // ---------------------------------------------------------------------------
