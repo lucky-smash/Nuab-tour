@@ -44,7 +44,7 @@ The destination list is in `src/data/destinations.ts`. It holds stable ids and t
 
 ## Landmark models
 
-Real 3D monuments can replace the line engravings, one stop at a time. India Gate stands at Delhi, the Taj Mahal at Agra and the Hawa Mahal at Jaipur.
+Real 3D monuments can replace the line engravings, one stop at a time. India Gate stands at Delhi, the Taj Mahal at Agra, the Hawa Mahal at Jaipur and a temple at Mathura–Vrindavan.
 
 - **Source:** `india-gate-lowpoly-3d-model.zip`, supplied by the client. The zip stays in `assets/source/` locally and is not committed; its extracted files are. It is a low-poly OBJ (653 triangles) with one 2048 px photographic texture. The extracted files are in `assets/source/india-gate/`. Confirm that the model's licence allows use on a commercial website before launch; the archive carries no licence or author information.
 - **Taj Mahal source:** `taj-mahal.zip`, supplied by the client, kept locally in `assets/source/`; the extracted OBJ is in `assets/source/taj-mahal/`. It has 139k triangles and no texture or UVs. The converter simplifies it to 48.5k triangles, rebuilds smooth-with-crease normals and bakes ambient occlusion into vertex colours, which is what gives the untextured marble its depth. It uses a warm marble (`--color "#d9c6a6"`) and full-strength, slightly wider occlusion (`--ao-strength 1 --ao-radius 0.2`) so it doesn't wash out to white against the pale atlas. The result is a 1 MB GLB. As with India Gate, the archive carries no licence or author, so confirm the licence before launch.
@@ -54,13 +54,18 @@ Real 3D monuments can replace the line engravings, one stop at a time. India Gat
   node scripts/build-hawa-mahal.mjs .dev/hawa-mahal/hawa-mahal.obj
   npm run model:landmark -- .dev/hawa-mahal/hawa-mahal.obj public/models/landmarks/hawa-mahal.glb --crease 32 --ao-strength 0.6
   ```
+- **Temple source:** `ram-temple.zip`, supplied by the client, kept locally in `assets/source/` and extracted to `assets/source/ram-temple/`. It is a model of the Ayodhya Ram Mandir: a 22 MB GLB with 170k triangles and mirror-metal rose-gold materials. `scripts/glb-to-obj.mjs` flattens each material to its average texture colour and writes an OBJ with vertex colours. The landmark converter then simplifies it, rebuilds normals and bakes occlusion, giving a 772 KB GLB of 51k triangles in matte pink sandstone with the white plinth and saffron flag. It stands in for the Prem Mandir engraving at the Mathura–Vrindavan stop, which is a different temple, so swap it for a Prem Mandir model if one becomes available. It also appears on the hero skyline, left of the aircraft's nose. As with the other supplied models, the archive carries no licence or author, so confirm the licence before launch.
+  ```bash
+  node scripts/glb-to-obj.mjs assets/source/ram-temple/source/Untitled.glb .dev/ram-temple/ram-temple.obj
+  npm run model:landmark -- .dev/ram-temple/ram-temple.obj public/models/landmarks/ram-temple.glb --simplify 0.3 --crease 40
+  ```
 - **Conversion:** `scripts/convert-landmark.mjs` centres the model on its base, scales it to a height of 1, converts the texture to WebP (keeping the alpha cut-outs for the Amar Jawan Jyoti rifles and finials) and writes a 274 KB GLB to `public/models/landmarks/india-gate.glb`.
 - **Hero:** any skyline monument with a model uses it instead of its engraving (`HeroLandmarkModels`, placed through `HERO_MODEL_PLACEMENT` in `Landmarks.tsx`).
 - **In the scene:** `LandmarkModels` in `src/components/journey/Landmarks.tsx` stands the model across from the aircraft, turned so its main arch faces the stop camera. It rises out of the atlas bottom-up as the aircraft approaches and sinks back in reverse. Clouds are kept off the monument and its sightline, and the stop's photo postcard is hidden because the model replaces it.
 
 To add another monument:
 
-1. Put the zip in `assets/source/` and extract it into its own folder.
+1. Put the zip in `assets/source/` and extract it into its own folder. If the model is a GLB, turn it into an OBJ first with `node scripts/glb-to-obj.mjs <in.glb> <out.obj>`.
 2. Run the converter. A textured model:
    ```bash
    npm run model:landmark -- assets/source/laxman-jhula/model.obj public/models/landmarks/laxman-jhula.glb --texture assets/source/laxman-jhula/texture.png

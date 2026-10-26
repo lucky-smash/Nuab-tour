@@ -168,7 +168,7 @@ export function LandmarkModels() {
 // the journey begins (each stop then raises its own engraving).
 // ---------------------------------------------------------------------------
 const SKYLINE: { id: string; yaw: number; dist: number; scale: number }[] = [
-  { id: "hawa-mahal", yaw: 24, dist: 190, scale: 0.5 },
+  { id: "hawa-mahal", yaw: 29, dist: 190, scale: 0.5 },
   { id: "temple", yaw: 16, dist: 195, scale: 0.46 },
   { id: "taj-mahal", yaw: -6, dist: 175, scale: 0.62 },
   { id: "india-gate", yaw: -19, dist: 165, scale: 0.46 }, // real model (HeroLandmarkModels): clear sky right of the tail
@@ -239,6 +239,8 @@ const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: 
   "india-gate": { yaw: -11, dist: 100, height: 25, turn: 18 },
   // the classic poster view: far behind the aircraft, dome and minarets rising above the fuselage
   "taj-mahal": { yaw: 0.5, dist: 210, height: 45, turn: 0, fog: false },
+  // left of the nose: shikhara and entrance pavilions in three-quarter view
+  temple: { yaw: 14, dist: 190, height: 34, turn: 30, fog: false },
 };
 
 function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; id: string }) {

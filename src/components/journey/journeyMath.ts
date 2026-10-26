@@ -156,7 +156,7 @@ export const CAM_KEYS: CamKey[] = [
   K(0.37, 7, 8, 25, 10, 0, 40, 0),
   K(0.46, 25, 12, 8, 3, 4, 38, 0.3, 2), // Jaipur: high beam so the aircraft passes below the Hawa Mahal model
   K(0.555, -7, 8, 25, 10, 0, 40, 0),
-  K(0.645, 25, 5, 8, 3, 3.2, 38, -0.3, 3), // Mathura–Vrindavan
+  K(0.645, 25, 12, 8, 3, 4, 38, -0.3, 3), // Mathura–Vrindavan: high beam so the aircraft passes below the temple model
   K(0.74, 6, 9, 26, 10, 0, 40, 0),
   K(0.83, 25, 5, 8, 3, 3.2, 38, 0.3, 4), // Haridwar–Rishikesh
   K(0.92, -4, 9, 28, 16, 3, 42, 0), // climbing toward the Himalaya

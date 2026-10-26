@@ -124,6 +124,7 @@ export const STOPS: JourneyStop[] = [
     lng: 77.6665,
     destinationIds: ["mathura", "vrindavan", "gokul", "govardhan", "barsana", "nandgaon"],
     engraving: "temple",
+    model: { url: "/models/landmarks/ram-temple.glb", height: 11, yaw: 30, facade: "-z", offset: { ahead: 16, across: 42 } },
     photoId: "vrindavan-prem-mandir",
     intro: intro("mathura-vrindavan-same-day-tour-by-car"),
     introSource: "/mathura-vrindavan-same-day-tour-by-car/",
