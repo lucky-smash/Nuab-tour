@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUpRight, MapPin } from "lucide-react";
 import { Engraving } from "@/components/engraving/Engraving";
 import { clsx } from "@/lib/site";
 import { journey } from "./journeyMath";
@@ -68,6 +68,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
   const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const fill = useRef<HTMLDivElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
   const [ready, setReady] = useState(false);
   const [current, setCurrent] = useState<string>("hero");
@@ -93,6 +94,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
           journey.target = self.progress;
           live = self.progress;
           if (fill.current) fill.current.style.transform = `scaleY(${self.progress})`;
+          if (pin.current) pin.current.style.top = `${self.progress * 100}%`; // the pin rides the tip of the route
           let id = "hero";
           if (self.progress > HERO_END) id = "transit";
           for (const s of stops) if (Math.abs(self.progress - s.p) < 0.07) id = s.id;
@@ -101,6 +103,9 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
         },
       });
       journey.target = st.progress;
+      // initial rail state (e.g. a reload part-way down the page), before the first scroll event
+      if (fill.current) fill.current.style.transform = `scaleY(${st.progress})`;
+      if (pin.current) pin.current.style.top = `${st.progress * 100}%`;
 
       const tl = gsap.timeline({ defaults: { ease: "power2.out" }, scrollTrigger: { trigger: section.current, start: "top top", end: "bottom bottom", scrub: 0.9 } });
       tl.set({}, {}, 1); // timeline length = 1 ⇒ positions are journey progress
@@ -183,7 +188,7 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
         ))}
         <ArrivalPanel destinationCount={destinationCount} current={current === "arrival"} />
 
-        <ProgressRail stops={stops} fill={fill} current={current} onGo={goTo} />
+        <ProgressRail stops={stops} fill={fill} pin={pin} current={current} onGo={goTo} />
         <div data-hero-scroll className="pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-navy md:flex">
           <span className="font-mono text-[0.68rem] uppercase tracking-[0.24em]">Scroll to begin the journey</span>
           <span className="relative block h-12 w-px overflow-hidden bg-navy/20">
@@ -388,7 +393,7 @@ function ArrivalPanel({ destinationCount, current }: { destinationCount: number;
   );
 }
 
-function ProgressRail({ stops, fill, current, onGo }: { stops: StopVM[]; fill: React.RefObject<HTMLDivElement | null>; current: string; onGo: (p: number) => void }) {
+function ProgressRail({ stops, fill, pin, current, onGo }: { stops: StopVM[]; fill: React.RefObject<HTMLDivElement | null>; pin: React.RefObject<HTMLDivElement | null>; current: string; onGo: (p: number) => void }) {
   return (
     <nav aria-label="Journey stops" className="absolute right-16 top-1/2 hidden -translate-y-1/2 lg:block xl:right-20">
       <div className="relative h-[46svh] w-px bg-navy/15">
@@ -409,6 +414,14 @@ function ProgressRail({ stops, fill, current, onGo }: { stops: StopVM[]; fill: R
             </span>
           </button>
         ))}
+        {/* "You are here": a map pin riding the tip of the route fill (positioned by the ScrollTrigger in
+            ImmersiveJourney, in the rail's own 0–100% coordinates). Decorative — the stop buttons above
+            already announce the current stop — so it is hidden from assistive tech and lets clicks through. */}
+        <div ref={pin} aria-hidden className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2">
+          <span className="flex size-[1.375rem] items-center justify-center rounded-full bg-white ring-1 ring-navy shadow-[0_2px_8px_-2px_rgb(23_43_61/.45)]">
+            <MapPin className="size-3 text-navy" strokeWidth={2.2} aria-hidden />
+          </span>
+        </div>
       </div>
     </nav>
   );
