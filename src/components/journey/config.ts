@@ -108,7 +108,7 @@ export const STOPS: JourneyStop[] = [
     lng: 75.7873,
     destinationIds: ["jaipur"],
     engraving: "hawa-mahal",
-    model: { url: "/models/landmarks/hawa-mahal.glb", height: 13, facade: "+z", offset: { ahead: 16, across: 42 } },
+    model: { url: "/models/landmarks/hawa-mahal.glb", height: 13, facade: "+z", offset: { ahead: 20, across: 42 } },
     photoId: "jaipur-hawa-mahal",
     intro: intro("jaipur-same-day-tour-by-car"),
     introSource: "/jaipur-same-day-tour-by-car/",
@@ -179,9 +179,10 @@ export function flightWaypoints(): [number, number, number][] {
     W(27.95, 77.62, 16.5),
     W(27.18, 78.04, 15.5, -28, 4), // Agra abeam
     W(26.7, 77.5, 17.5),
-    W(26.75, 76.6, 17.5),
-    W(26.92, 75.79, 15.5, 12.5, -25), // Jaipur abeam
-    W(27.35, 76.15, 17.5),
+    W(26.5, 76.55, 17.5),
+    W(26.92, 75.79, 15.5, 0, 24), // Jaipur abeam: a straight westbound pass (no turn while the stop is on screen)
+    W(27.0, 75.1, 17.5), // then a wide loop back east toward Mathura
+    W(27.6, 75.9, 17.5),
     W(27.5, 76.95, 17.5),
     W(27.53, 77.67, 15.5, -27, 7), // Mathura–Vrindavan abeam
     W(28.3, 78.2, 17.5),
@@ -192,4 +193,4 @@ export function flightWaypoints(): [number, number, number][] {
   ];
 }
 /** index of the waypoint that is abeam each stop (same order as STOPS) */
-export const STOP_WAYPOINT_INDEX = [1, 3, 6, 9, 12];
+export const STOP_WAYPOINT_INDEX = [1, 3, 6, 10, 13];
