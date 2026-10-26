@@ -112,7 +112,7 @@ The map uses MapLibre GL with the free, key-less OpenFreeMap "positron" style, r
 
 If the map fails to load, the directory and destination panels remain fully usable.
 
-**Flights:** small airliners take off from the Delhi hub in every direction. Each follows a gentle arc to one of the destinations currently shown, trailing a fading contrail and growing as it "climbs". Departures are staggered so there are always planes in the air, and a ring pulses at Delhi. The flights follow the region and filter selection. They pause when the map is off-screen or the tab is hidden. With reduced motion, only the faint arcs are drawn. The flights live in `src/components/map/flights.ts` and are labelled in the legend as illustrative, so they imply no routes, airlines or schedules.
+**Flights:** small airliners take off from the Delhi hub in every direction. Each follows a gentle arc to one of the destinations currently shown, trailing a fading contrail and growing as it "climbs". Departures are staggered so there are always planes in the air, and a ring pulses at Delhi. Domestic flights (navy) follow the region and filter selection. International flights (coral) to every UAE and Thailand destination always run, so even the North India view shows them climbing out of Delhi. Each international destination keeps a small coral ring, so its arc lands even when the filters hide that marker. They pause when the map is off-screen or the tab is hidden. With reduced motion, only the faint arcs are drawn. The flights live in `src/components/map/flights.ts` and are labelled in the legend as illustrative, so they imply no routes, airlines or schedules.
 
 ## Known limitations
 
