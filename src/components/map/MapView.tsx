@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Map as MLMap, Marker as MLMarker, LngLatBoundsLike, StyleSpecification } from "maplibre-gl";
 import type { AtlasDest } from "./atlasData";
+import { startFlights } from "./flights";
 
 export type MapStatus = "loading" | "ready" | "failed";
 export type ViewKey = "india" | "himalaya" | "uae" | "thailand" | "all";
@@ -93,6 +94,7 @@ export function MapView({
   onSelectRef.current = onSelect;
   const visibleRef = useRef(visibleIds);
   visibleRef.current = visibleIds;
+  const flights = useRef<ReturnType<typeof startFlights> | null>(null);
 
   // init
   useEffect(() => {
@@ -130,6 +132,7 @@ export function MapView({
           addIndiaBorders(map);
           map.addSource("journey", { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: line } } });
           map.addLayer({ id: "journey-line", type: "line", source: "journey", paint: { "line-color": "#233a50", "line-width": 1.4, "line-dasharray": [2, 2], "line-opacity": 0.75 } });
+          if (el.current) flights.current = startFlights(map, dests, el.current);
 
           for (const d of dests) {
             const node = document.createElement("button");
@@ -162,6 +165,8 @@ export function MapView({
       clearTimeout(timeout);
       markerMap.forEach(({ marker }) => marker.remove());
       markerMap.clear();
+      flights.current?.stop();
+      flights.current = null;
       map?.remove();
       mapRef.current = null;
     };
@@ -174,6 +179,7 @@ export function MapView({
       node.classList.toggle("is-hidden", !vis);
       node.tabIndex = vis ? 0 : -1;
     });
+    flights.current?.setVisible(visibleRef.current);
   };
   useEffect(applyVisibility, [visibleIds]);
 

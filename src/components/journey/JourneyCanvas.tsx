@@ -7,7 +7,7 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { Aircraft } from "./Aircraft";
 import { AtlasGround, CloudSea, Clouds, Lights, Ridges, Sky } from "./Environment";
 import { Engravings, HeroLandmarkModels, HeroSkyline, LandmarkModels, RouteLines, StopMarkers } from "./Landmarks";
-import { cameraKey, getCurve, journey, progressToU, lerp, stopFrames, stage } from "./journeyMath";
+import { composeCamera, getCurve, journey, progressToU, lerp, stopFrames, stage } from "./journeyMath";
 import { STOPS } from "./config";
 
 /**
@@ -142,16 +142,7 @@ function FlightRig({ curve, onAircraftReady }: { curve: THREE.CatmullRomCurve3; 
     // --- camera: composed in the aircraft's (smoothed) horizontal heading frame
     tmp.head.set(tmp.tan.x, 0, tmp.tan.z).normalize();
     tmp.smoothHead.lerp(tmp.head, snap ? 1 : 1 - Math.exp(-dt * 2.2)).normalize();
-    tmp.side.crossVectors(UP, tmp.smoothHead).normalize(); // + = aircraft's left
-    const c = cameraKey(p);
-    const portrait = size.width < size.height * 0.85;
-    const dist = portrait ? 1.45 : size.width < 1100 ? 1.15 : 1;
-    tmp.camTarget
-      .copy(tmp.pos)
-      .addScaledVector(tmp.side, c.side * dist)
-      .addScaledVector(UP, c.up * (portrait ? 1.25 : 1))
-      .addScaledVector(tmp.smoothHead, -c.back * dist);
-    tmp.lookTarget.copy(tmp.pos).addScaledVector(tmp.smoothHead, c.look).addScaledVector(UP, c.lookUp);
+    const comp = composeCamera(p, size.width, size.height, tmp.pos, tmp.smoothHead, tmp.camTarget, tmp.lookTarget);
     if (snap) { camera.position.copy(tmp.camTarget); tmp.camPos.copy(tmp.lookTarget); }
     else {
       camera.position.lerp(tmp.camTarget, 1 - Math.exp(-dt * 4));
@@ -166,12 +157,8 @@ function FlightRig({ curve, onAircraftReady }: { curve: THREE.CatmullRomCurve3; 
       stage.sunReady = true;
     }
     const cam = camera as THREE.PerspectiveCamera;
-    const fov = portrait ? c.fov * 1.25 : c.fov;
-    if (Math.abs(cam.fov - fov) > 0.01) cam.fov = lerp(cam.fov, fov, snap ? 1 : 1 - Math.exp(-dt * 3));
-    // horizontal framing: shift the projection so the aircraft sits beside the text column
-    const frame = portrait ? 0 : c.frame;
-    const vshift = portrait ? 0.34 : 0; // portrait: aircraft in the upper third, text sheet below
-    cam.setViewOffset(size.width, size.height, -frame * size.width * 0.5, vshift * size.height, size.width, size.height);
+    if (Math.abs(cam.fov - comp.fov) > 0.01) cam.fov = lerp(cam.fov, comp.fov, snap ? 1 : 1 - Math.exp(-dt * 3));
+    cam.setViewOffset(size.width, size.height, -comp.frame * size.width * 0.5, comp.vshift * size.height, size.width, size.height);
     cam.updateProjectionMatrix();
     first.current = false;
   });

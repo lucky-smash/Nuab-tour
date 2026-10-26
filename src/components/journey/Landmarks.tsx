@@ -2,20 +2,106 @@
 
 import { Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, type ThreeElements } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { getDrawing } from "@/components/engraving/drawings";
 import { STOPS, toWorld } from "./config";
-import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey, stage, landmarkPosition } from "./journeyMath";
+import { journey, progressToU, activeStop, stopFrames, cameraKey, landmarkPosition, poseCameraAt } from "./journeyMath";
 import { formatCoord } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
 // Engravings standing on the atlas at each stop. Segments are sorted bottom-up and revealed with
 // drawRange as the aircraft approaches; they turn (about Y) to face the camera like a cut-out.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Zones: every monument belongs to one part of the journey — the hero skyline (home p = 0) or its
+// own stop (home p = the stop). It is shown exactly while the camera naturally sees it around that
+// home: the stretch of the camera path (sampled with the rig's own composition, for the current
+// viewport) during which it is in frame. So it enters and leaves at the edge of the screen — never
+// rising, sinking or popping — and never appears in another part of the journey (e.g. the Delhi
+// view holds India Gate alone). Visibility is a pure function of progress: scrolling back up shows
+// exactly the same thing.
+// ---------------------------------------------------------------------------
+const ZONE_SAMPLES = 400;
+const ZONE_MARGIN = 0.015; // extra progress while out of frame, covering the rig's camera damping
+const _zoneCam = new THREE.PerspectiveCamera(36, 1, 0.3, 2000);
+const _frustum = new THREE.Frustum();
+const _vp = new THREE.Matrix4();
+const _box = new THREE.Box3();
+const _tmpBox = new THREE.Box3();
+
+function worldBox(obj: THREE.Object3D, out: THREE.Box3) {
+  obj.updateWorldMatrix(true, true);
+  out.makeEmpty();
+  obj.traverse((o) => {
+    const g = (o as THREE.Mesh).geometry;
+    if (!g) return;
+    if (!g.boundingBox) g.computeBoundingBox();
+    out.union(_tmpBox.copy(g.boundingBox!).applyMatrix4(o.matrixWorld));
+  });
+  return out;
+}
+
+function computeZone(obj: THREE.Object3D, home: number, width: number, height: number): [number, number] | null {
+  if (worldBox(obj, _box).isEmpty()) return null; // model not loaded yet
+  const N = ZONE_SAMPLES;
+  const seen: boolean[] = [];
+  for (let i = 0; i <= N; i++) {
+    poseCameraAt(i / N, width, height, _zoneCam);
+    _vp.multiplyMatrices(_zoneCam.projectionMatrix, _zoneCam.matrixWorldInverse);
+    seen.push(_frustum.setFromProjectionMatrix(_vp).intersectsBox(_box));
+  }
+  let h = Math.round(home * N);
+  if (!seen[h]) {
+    // not in frame exactly at home: take the nearest stretch where it is (within ±0.1)
+    let best = -1;
+    for (let d = 1; d <= N * 0.1 && best < 0; d++) {
+      if (seen[h - d]) best = h - d;
+      else if (seen[h + d]) best = h + d;
+    }
+    if (best < 0) return [Math.max(0, home - 0.12), home + 0.13];
+    h = best;
+  }
+  let a = h, b = h;
+  while (a > 0 && seen[a - 1]) a--;
+  while (b < N && seen[b + 1]) b++;
+  // widen by the margin, but only across samples where it is out of frame (never into another stretch)
+  let lo = a, hi = b;
+  const m = Math.round(ZONE_MARGIN * N);
+  while (lo > 0 && a - lo < m && !seen[lo - 1] && !seen[Math.max(0, lo - 2)]) lo--;
+  while (hi < N && hi - b < m && !seen[hi + 1] && !seen[Math.min(N, hi + 2)]) hi++;
+  return [a === 0 ? 0 : lo / N, b === N ? 1 : hi / N];
+}
+
+function useZone(get: () => THREE.Object3D | null | undefined, home: number) {
+  const zone = useRef<{ key: string; z: [number, number] } | null>(null);
+  useFrame(({ size }) => {
+    const o = get();
+    if (!o) return;
+    const key = `${size.width}x${size.height}`;
+    if (!zone.current || zone.current.key !== key) {
+      const z = computeZone(o, home, size.width, size.height);
+      if (!z) return;
+      zone.current = { key, z };
+    }
+    const p = journey.current;
+    o.visible = p >= zone.current.z[0] && p <= zone.current.z[1];
+  });
+}
+
+function ZoneGroup({ home, children, ...props }: { home: number; children: React.ReactNode } & ThreeElements["group"]) {
+  const ref = useRef<THREE.Group>(null);
+  useZone(() => ref.current, home);
+  return (
+    <group ref={ref} {...props}>
+      {children}
+    </group>
+  );
+}
+
 const ENGRAVING_SCALE = 0.36;
 
 function engravingGeometry(id: string) {
@@ -39,9 +125,9 @@ export function Engravings() {
   const items = useMemo(
     () =>
       STOPS.flatMap((s, i) => {
-        if (s.model) return []; // a real 3D model stands at this stop instead (LandmarkModels)
+        if (s.model && s.model.atStop !== false) return []; // a real 3D model stands at this stop instead (LandmarkModels)
         const geo = engravingGeometry(s.engraving);
-        const mainMat = new THREE.LineBasicMaterial({ color: "#233a50", transparent: true, opacity: 0.85, fog: true });
+        const mainMat = new THREE.LineBasicMaterial({ color: "#233a50", transparent: true, opacity: 0.9, fog: true });
         const hatchMat = new THREE.LineBasicMaterial({ color: "#838177", transparent: true, opacity: 0.5, fog: true });
         return [{ stop: s, pos: stopFrames()[i].engraving.clone(), geo, mainMat, hatchMat }];
       }),
@@ -49,18 +135,10 @@ export function Engravings() {
   );
   const groups = useRef<(THREE.Group | null)[]>([]);
   useFrame(({ camera }) => {
-    const p = journey.current;
     items.forEach((it, i) => {
       const g = groups.current[i];
       if (!g) return;
-      // draw in from 0.11 before the stop; fully drawn 0.025 before; fade far behind
-      const reveal = smoothstep(it.stop.p - 0.11, it.stop.p - 0.025, p);
-      const fade = 1 - smoothstep(it.stop.p + 0.12, it.stop.p + 0.2, p);
-      it.geo.main.g.setDrawRange(0, Math.floor((it.geo.main.count / 2) * reveal) * 2);
-      it.geo.hatch.g.setDrawRange(0, Math.floor((it.geo.hatch.count / 2) * smoothstep(0.35, 1, reveal)) * 2);
-      it.mainMat.opacity = 0.9 * fade;
-      it.hatchMat.opacity = 0.5 * fade;
-      g.visible = reveal > 0.001 && fade > 0.001;
+      // monuments stay on the atlas for the whole journey (no draw-in, no fade)
       // face the camera around the vertical axis
       const dx = camera.position.x - g.position.x, dz = camera.position.z - g.position.z;
       g.rotation.y = Math.atan2(dx, dz);
@@ -69,10 +147,12 @@ export function Engravings() {
   return (
     <group>
       {items.map((it, i) => (
-        <group key={it.stop.id} position={it.pos} ref={(el) => { groups.current[i] = el; }}>
-          <lineSegments geometry={it.geo.hatch.g} material={it.hatchMat} />
-          <lineSegments geometry={it.geo.main.g} material={it.mainMat} />
-        </group>
+        <ZoneGroup key={it.stop.id} home={it.stop.p} name={`engraving-${it.stop.id}`}>
+          <group position={it.pos} ref={(el) => { groups.current[i] = el; }}>
+            <lineSegments geometry={it.geo.hatch.g} material={it.hatchMat} />
+            <lineSegments geometry={it.geo.main.g} material={it.mainMat} />
+          </group>
+        </ZoneGroup>
       ))}
     </group>
   );
@@ -80,9 +160,8 @@ export function Engravings() {
 
 // ---------------------------------------------------------------------------
 // Real landmark models (where a stop has one): textured GLB standing across from the aircraft,
-// turned so its main facade meets the camera at the stop. It rises out of the atlas bottom-up as
-// the aircraft approaches (a world-space clipping plane, mirroring the engravings' draw-in) and
-// sinks back in reverse, so scrolling up and down always shows the same state.
+// turned so its main facade meets the camera at the stop. Monuments are permanent: they stand on
+// the atlas for the whole journey, never rising, sinking or fading.
 // ---------------------------------------------------------------------------
 const FACADE_YAW = { "+x": Math.PI / 2, "-x": -Math.PI / 2, "+z": 0, "-z": Math.PI } as const;
 
@@ -113,31 +192,22 @@ function LandmarkModel({ index }: { index: number }) {
     const at = landmarkPosition(index);
     const toCam = Math.atan2(cam.x - at.x, cam.z - at.z);
     const rotY = toCam - FACADE_YAW[m.facade ?? "+z"] + ((m.yaw ?? 0) * Math.PI) / 180;
-    const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
     const root = scene.clone(true);
     const mats: THREE.MeshStandardMaterial[] = [];
     root.traverse((o) => {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
       const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
-      mat.clippingPlanes = [clip];
       mat.envMapIntensity = mat.map ? 0.55 : 0.35; // untextured marble: shading from the baked AO + key light
       if (mat.map) mat.map.anisotropy = 8;
       mesh.material = mat;
       mats.push(mat);
     });
-    const shadow = new THREE.MeshBasicMaterial({ map: contactShadowTexture(), transparent: true, depthWrite: false, opacity: 0 });
-    return { root, pos: at, rotY, clip, mats, shadow };
+    const shadow = new THREE.MeshBasicMaterial({ map: contactShadowTexture(), transparent: true, depthWrite: false, opacity: 1 });
+    return { root, pos: at, rotY, mats, shadow };
   }, [scene, index, stop.p, m.facade, m.yaw]);
   const group = useRef<THREE.Group>(null);
-  useFrame(() => {
-    const p = journey.current;
-    // rise from 0.10 before the stop, complete 0.03 before; sink again well after it
-    const rise = smoothstep(stop.p - 0.1, stop.p - 0.03, p) * (1 - smoothstep(stop.p + 0.14, stop.p + 0.22, p));
-    if (group.current) group.current.visible = rise > 0.001;
-    built.clip.constant = rise >= 0.999 ? m.height * 2 : m.height * 1.02 * rise; // keeps y <= constant
-    built.shadow.opacity = Math.min(1, rise * 2.5);
-  });
+  useZone(() => group.current, stop.p);
   return (
     <group ref={group} position={built.pos} name={`landmark-${stop.id}`}>
       <mesh rotation-x={-Math.PI / 2} position-y={0.06} material={built.shadow} renderOrder={-1}>
@@ -152,7 +222,7 @@ export function LandmarkModels() {
   return (
     <>
       {STOPS.map((s, i) =>
-        s.model ? (
+        s.model && s.model.atStop !== false ? (
           <Suspense key={s.id} fallback={null}>
             <LandmarkModel index={i} />
           </Suspense>
@@ -163,9 +233,9 @@ export function LandmarkModels() {
 }
 
 // ---------------------------------------------------------------------------
-// Hero skyline: four engraved monuments of the journey standing on the distant horizon of the
-// first viewport, in sandstone linework — the background layer behind the aircraft. They fade as
-// the journey begins (each stop then raises its own engraving).
+// Hero skyline: the journey's monuments standing on the distant horizon of the first viewport —
+// the background layer behind the aircraft. Monuments without a real model are drawn in sandstone
+// linework. Like every monument, they stay in place for the whole journey.
 // ---------------------------------------------------------------------------
 const SKYLINE: { id: string; yaw: number; dist: number; scale: number }[] = [
   { id: "hawa-mahal", yaw: 29, dist: 190, scale: 0.5 },
@@ -196,13 +266,9 @@ export function HeroSkyline({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
     });
   }, [curve]);
   const group = useRef<THREE.Group>(null);
-  useFrame(() => {
-    const k = 1 - smoothstep(0.025, 0.085, journey.current);
-    if (group.current) group.current.visible = k > 0.002;
-    for (const it of items) { it.main.opacity = 0.62 * k; it.hatch.opacity = 0.42 * k; }
-  });
+  useZone(() => group.current, 0);
   return (
-    <group ref={group}>
+    <group ref={group} name="hero-skyline">
       {items.map((it) => (
         <group key={it.key} position={it.pos} rotation-y={it.rotY} scale={it.scale} renderOrder={-1}>
           <lineSegments geometry={it.geo.hatch.g} material={it.hatch} />
@@ -232,9 +298,7 @@ function heroModelFor(id: string) {
 }
 
 // Real models on the hero skyline: placed like the engravings (yaw/dist from the hero camera), sized
-// to the engraving's height, softened by the dawn haze. They rise out of the cloud sea with the
-// aircraft's entrance and sink back into it as the journey begins — the stop's own model then
-// rises at Delhi.
+// to the engraving's height. Permanent, like every monument.
 const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: number; turn?: number; fog?: boolean }> = {
   "india-gate": { yaw: -11, dist: 100, height: 25, turn: 18 },
   // the classic poster view: far behind the aircraft, dome and minarets rising above the fuselage
@@ -255,29 +319,19 @@ function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; i
     const pos = new THREE.Vector3(cam.x, 0, cam.z).addScaledVector(d, place.dist);
     const toCam = Math.atan2(cam.x - pos.x, cam.z - pos.z);
     const rotY = toCam - FACADE_YAW[m.facade ?? "+z"] + (((place.turn ?? m.yaw ?? 0) as number) * Math.PI) / 180;
-    const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
     const root = scene.clone(true);
     root.traverse((o) => {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
       const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
-      mat.clippingPlanes = [clip];
       mat.envMapIntensity = mat.map ? 0.6 : 0.35;
       if (place.fog === false) mat.fog = false;
       mesh.material = mat;
     });
-    return { root, pos, rotY, clip };
+    return { root, pos, rotY };
   }, [scene, curve, place.yaw, place.dist, place.turn, place.fog, m.facade, m.yaw]);
   const group = useRef<THREE.Group>(null);
-  const shown = useRef(0);
-  useFrame((_, dt) => {
-    // rise with the hero entrance, sink as the journey begins
-    const k = 1 - smoothstep(0.012, 0.06, journey.current);
-    shown.current = Math.min(1, shown.current + Math.min(dt, 0.05) / 1.6);
-    const rise = Math.min(k, smoothstep(0, 1, Math.max(shown.current, stage.intro >= 1 ? 1 : 0)));
-    if (group.current) group.current.visible = rise > 0.001;
-    built.clip.constant = rise >= 0.999 ? place.height * 2 : place.height * 1.02 * rise;
-  });
+  useZone(() => group.current, 0);
   return (
     <group ref={group} position={built.pos} name={`hero-landmark-${id}`}>
       <primitive object={built.root} rotation-y={built.rotY} scale={place.height} />

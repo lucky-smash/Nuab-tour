@@ -1,5 +1,6 @@
 import { formatCoord } from "@/lib/site";
 import region from "@/data/geo/region.json";
+import { PLANE_PATH } from "@/components/map/flights";
 
 /**
  * Engraved navigational chart (equirectangular, 40°E–110°E × 0°–40°N) linking Delhi with the
@@ -32,6 +33,16 @@ function countryPath(rings: number[][][]) {
 }
 const COUNTRIES = (region.countries as { name: string; rings: number[][][] }[]).map((c) => ({ name: c.name, d: countryPath(c.rings), india: c.name === "India" }));
 
+/** Flights: one arc per destination, lifted with its length; flight time grows with distance and
+ * departures are staggered (deterministic), so planes are always leaving Delhi somewhere. */
+const FLIGHTS = PLACES.map((p, i) => {
+  const chord = Math.hypot(px(p.lon) - px(HUB.lon), py(p.lat) - py(HUB.lat));
+  const fly = 2.4 + chord / 110;
+  const period = fly + 1.6 + ((i * 0.618) % 1) * 3.2;
+  return { name: p.name, d: arc(HUB, p, Math.min(70, Math.max(26, chord * 0.22))), f: fly / period, period: +period.toFixed(2), begin: -(((i * 1.37) % 1) * period).toFixed(2) };
+});
+const SPLINE = "0.42 0 0.58 1;0 0 1 1";
+
 function arc(a: { lon: number; lat: number }, b: { lon: number; lat: number }, lift: number) {
   const x0 = px(a.lon), y0 = py(a.lat), x1 = px(b.lon), y1 = py(b.lat);
   const mx = (x0 + x1) / 2, my = (y0 + y1) / 2 - lift;
@@ -61,14 +72,39 @@ export function WorldRoutes() {
           {Array.from({ length: 3 }, (_, i) => 10 + i * 10).map((lat) => <text key={lat} x={4} y={r(py(lat)) - 4}>{lat}°N</text>)}
         </g>
 
-        {/* illustrative arcs */}
-        <g fill="none" stroke="#233a50" strokeWidth="1.1" strokeDasharray="3 4">
-          <path d={arc(HUB, PLACES[0], 46)} />
-          <path d={arc(HUB, PLACES[4], 70)} />
-          <path d={arc(HUB, PLACES[7], 40)} strokeOpacity=".5" />
+        {/* illustrative arcs, one to every destination served */}
+        <g fill="none" stroke="#233a50" strokeWidth="1" strokeDasharray="3 4" strokeOpacity=".45">
+          {FLIGHTS.map((f, i) => <path key={f.name} id={`wr-arc-${i}`} d={f.d} />)}
+        </g>
+        {/* planes taking off from Delhi along each arc, with a fading contrail (SVG animation, no script) */}
+        <g className="wr-fly">
+          {FLIGHTS.map((f, i) => {
+            const t = { dur: `${f.period}s`, begin: `${f.begin}s`, repeatCount: "indefinite" } as const;
+            const fade = { ...t, attributeName: "opacity", values: "0;1;1;0;0", keyTimes: `0;${(f.f * 0.06).toFixed(3)};${(f.f * 0.94).toFixed(3)};${f.f.toFixed(3)};1` };
+            const key = { keyTimes: `0;${f.f.toFixed(3)};1`, calcMode: "spline", keySplines: SPLINE } as const;
+            return (
+              <g key={f.name}>
+                <path d={f.d} pathLength={1} fill="none" stroke="#233a50" strokeWidth="1.6" strokeLinecap="round" strokeDasharray="0.16 2" opacity="0">
+                  <animate {...t} {...key} attributeName="stroke-dashoffset" values="0.16;-0.84;-0.84" />
+                  <animate {...fade} />
+                </path>
+                <g opacity="0">
+                  <g transform="rotate(90) scale(.32) translate(-32 -32)">
+                    <path d={PLANE_PATH} fill="#233a50" stroke="#fff" strokeWidth="3.4" strokeLinejoin="round" paintOrder="stroke" />
+                  </g>
+                  <animateMotion {...t} {...key} rotate="auto" keyPoints="0;1;1"><mpath href={`#wr-arc-${i}`} /></animateMotion>
+                  <animate {...fade} />
+                </g>
+              </g>
+            );
+          })}
         </g>
         {/* hub */}
         <g>
+          <circle className="wr-fly" cx={r(px(HUB.lon))} cy={r(py(HUB.lat))} r="9" fill="none" stroke="#233a50" opacity="0">
+            <animate attributeName="r" values="9;26" dur="2.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values=".55;0" dur="2.2s" repeatCount="indefinite" />
+          </circle>
           <circle cx={r(px(HUB.lon))} cy={r(py(HUB.lat))} r="9" fill="none" stroke="#233a50" />
           <circle cx={r(px(HUB.lon))} cy={r(py(HUB.lat))} r="3.5" fill="#233a50" />
           <text x={r(px(HUB.lon)) + 14} y={r(py(HUB.lat)) - 8} fontFamily="var(--font-fraunces)" fontSize="20" fill="#233a50">Delhi</text>
@@ -95,6 +131,7 @@ export function WorldRoutes() {
           <path d="M0 -30 L4 0 L0 12 L-4 0 Z" fill="#233a50" stroke="none" />
           <text y="-35" textAnchor="middle" fontFamily="var(--font-fraunces)" fontStyle="italic" fontSize="12" fill="#233a50" stroke="none">N</text>
         </g>
+        <style>{"@media (prefers-reduced-motion: reduce){.wr-fly{display:none}}"}</style>
       </svg>
       <figcaption className="mt-2 flex justify-between font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted">
         <span>Equirectangular · 40°E–110°E · boundaries as per India</span>

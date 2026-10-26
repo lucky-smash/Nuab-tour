@@ -37,6 +37,8 @@ export type JourneyStop = {
     offset?: { ahead?: number; across?: number };
     /** also replace this monument's engraving on the hero skyline (default true) */
     hero?: boolean;
+    /** false = hero skyline only: no model at the stop itself (the stop keeps its line engraving) */
+    atStop?: boolean;
     credit?: string;
   };
   photoId: string;
@@ -124,7 +126,8 @@ export const STOPS: JourneyStop[] = [
     lng: 77.6665,
     destinationIds: ["mathura", "vrindavan", "gokul", "govardhan", "barsana", "nandgaon"],
     engraving: "temple",
-    model: { url: "/models/landmarks/ram-temple.glb", height: 11, yaw: 30, facade: "-z", offset: { ahead: 16, across: 42 } },
+    // hero skyline only (at the stop it would stand right beside Delhi's India Gate): the stop keeps its engraving
+    model: { url: "/models/landmarks/ram-temple.glb", height: 11, yaw: 30, facade: "-z", atStop: false },
     photoId: "vrindavan-prem-mandir",
     intro: intro("mathura-vrindavan-same-day-tour-by-car"),
     introSource: "/mathura-vrindavan-same-day-tour-by-car/",
@@ -142,6 +145,7 @@ export const STOPS: JourneyStop[] = [
     lng: 78.2159,
     destinationIds: ["haridwar", "rishikesh"],
     engraving: "jhula",
+    model: { url: "/models/landmarks/laxman-jhula.glb", height: 12, facade: "+z", offset: { ahead: 14, across: 52 } },
     photoId: "rishikesh-laxman-jhula",
     intro: intro("haridwar-and-rishikesh-same-day-tour-by-car"),
     introSource: "/haridwar-and-rishikesh-same-day-tour-by-car/",

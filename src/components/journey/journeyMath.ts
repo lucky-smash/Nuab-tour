@@ -158,7 +158,7 @@ export const CAM_KEYS: CamKey[] = [
   K(0.555, -7, 8, 25, 10, 0, 40, 0),
   K(0.645, 25, 12, 8, 3, 4, 38, -0.3, 3), // Mathura–Vrindavan: high beam so the aircraft passes below the temple model
   K(0.74, 6, 9, 26, 10, 0, 40, 0),
-  K(0.83, 25, 5, 8, 3, 3.2, 38, 0.3, 4), // Haridwar–Rishikesh
+  K(0.83, 25, 12, 8, 3, 4, 38, 0.3, 4), // Haridwar–Rishikesh: high beam so the aircraft passes below Laxman Jhula
   K(0.92, -4, 9, 28, 16, 3, 42, 0), // climbing toward the Himalaya
   K(1.0, -2, 12, 36, 24, 7, 44, 0),
 ];
@@ -177,6 +177,42 @@ export function cameraKey(p: number): CamKey {
     }
   }
   return ks[ks.length - 1];
+}
+
+/**
+ * Camera composition at progress p, in the horizontal heading frame `head` (the flight rig passes its
+ * smoothed heading). Shared by the rig and by the landmark visibility zones, so both see one camera.
+ */
+const _UP = new THREE.Vector3(0, 1, 0);
+const _side = new THREE.Vector3();
+export function composeCamera(p: number, width: number, height: number, pos: THREE.Vector3, head: THREE.Vector3, outCam: THREE.Vector3, outLook: THREE.Vector3) {
+  const c = cameraKey(p);
+  const portrait = width < height * 0.85;
+  const dist = portrait ? 1.45 : width < 1100 ? 1.15 : 1;
+  _side.crossVectors(_UP, head).normalize(); // + = aircraft's left
+  outCam.copy(pos).addScaledVector(_side, c.side * dist).addScaledVector(_UP, c.up * (portrait ? 1.25 : 1)).addScaledVector(head, -c.back * dist);
+  outLook.copy(pos).addScaledVector(head, c.look).addScaledVector(_UP, c.lookUp);
+  // frame: horizontal shift so the aircraft sits beside the text column; vshift: portrait puts the
+  // aircraft in the upper third, text sheet below
+  return { fov: portrait ? c.fov * 1.25 : c.fov, frame: portrait ? 0 : c.frame, vshift: portrait ? 0.34 : 0 };
+}
+
+const _pp = new THREE.Vector3(), _pt = new THREE.Vector3(), _ph = new THREE.Vector3(), _pc = new THREE.Vector3(), _pl = new THREE.Vector3();
+/** Pose `cam` exactly as the settled flight rig would at progress p (no damping). */
+export function poseCameraAt(p: number, width: number, height: number, cam: THREE.PerspectiveCamera) {
+  const curve = getCurve();
+  const u = progressToU(p);
+  curve.getPointAt(u, _pp);
+  curve.getTangentAt(u, _pt);
+  _ph.set(_pt.x, 0, _pt.z).normalize();
+  const f = composeCamera(p, width, height, _pp, _ph, _pc, _pl);
+  cam.position.copy(_pc);
+  cam.lookAt(_pl);
+  cam.fov = f.fov;
+  cam.aspect = width / height;
+  cam.setViewOffset(width, height, -f.frame * width * 0.5, f.vshift * height, width, height);
+  cam.updateProjectionMatrix();
+  cam.updateMatrixWorld();
 }
 
 // Sky palette along the journey: [p, zenith, sky blue, horizon, sun glow, sun strength]
