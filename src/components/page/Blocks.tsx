@@ -57,7 +57,21 @@ export function PageHeader({
   return (
     <header className={clsx("relative overflow-hidden pt-32 pb-14 md:pt-40 md:pb-20", tone === "mist" ? "bg-mist" : tone === "powder" ? "bg-powder/60" : "bg-white")}>
       {engraving && !image && (
-        <Engraving id={engraving} className="pointer-events-none absolute -bottom-4 right-[-4%] hidden w-[38rem] text-navy/12 lg:block" weight={1.4} />
+        // the monument as a background plate: the right half of the header (below the fixed nav), drawn whole
+        // and in proportion (fitted to that box, centred, base flush on the bottom edge), fading out toward
+        // the text and very slightly at the foot. Only this layer is faded; the text sits above it.
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 right-0 top-[45%] w-[78%] sm:top-1/3 sm:w-[62%] md:top-24 md:w-1/2 lg:top-28"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0%, #000 42%), linear-gradient(to top, rgb(0 0 0 / .6) 0%, #000 14%)",
+            maskComposite: "intersect",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 42%), linear-gradient(to top, rgb(0 0 0 / .6) 0%, #000 14%)",
+            WebkitMaskComposite: "source-in",
+          }}
+        >
+          <Engraving id={engraving} ground preserveAspectRatio="xMidYMax meet" className="h-full w-full text-navy/[.09] md:text-navy/[.16]" weight={1.4} />
+        </div>
       )}
       <div className={clsx("container-x relative", image && "grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end")}>
         <div>
