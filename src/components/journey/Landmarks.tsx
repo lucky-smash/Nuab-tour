@@ -9,7 +9,7 @@ import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { getDrawing } from "@/components/engraving/drawings";
 import { STOPS, toWorld } from "./config";
-import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey } from "./journeyMath";
+import { journey, progressToU, smoothstep, activeStop, stopFrames, cameraKey, stage } from "./journeyMath";
 import { formatCoord } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
@@ -168,9 +168,9 @@ export function LandmarkModels() {
 // ---------------------------------------------------------------------------
 const SKYLINE: { id: string; yaw: number; dist: number; scale: number }[] = [
   { id: "hawa-mahal", yaw: 24, dist: 190, scale: 0.5 },
-  { id: "india-gate", yaw: 11, dist: 165, scale: 0.46 },
+  { id: "temple", yaw: 11, dist: 195, scale: 0.46 },
   { id: "taj-mahal", yaw: -6, dist: 175, scale: 0.62 },
-  { id: "temple", yaw: -21, dist: 195, scale: 0.46 },
+  { id: "india-gate", yaw: -19, dist: 165, scale: 0.46 }, // real model (HeroLandmarkModels): clear sky right of the tail
 ];
 
 export function HeroSkyline({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
@@ -182,7 +182,8 @@ export function HeroSkyline({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
     // hero camera sits ahead-left of the aircraft (see CAM_KEYS[0]); look back past it
     const cam = p0.clone().addScaledVector(side, 10.2).addScaledVector(head, 11.6);
     const view = new THREE.Vector3(p0.x - cam.x, 0, p0.z - cam.z).normalize();
-    return SKYLINE.map((s) => {
+    return SKYLINE.flatMap((s) => {
+      if (heroModelFor(s.id)) return []; // a real 3D model stands here instead (HeroLandmarkModels)
       const d = view.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), (s.yaw * Math.PI) / 180);
       const pos = new THREE.Vector3(cam.x, 0, cam.z).addScaledVector(d, s.dist);
       const geo = engravingGeometry(s.id);
@@ -190,7 +191,7 @@ export function HeroSkyline({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
       const main = new THREE.LineBasicMaterial({ color: "#9c7f58", transparent: true, opacity: 0.62, fog: false, depthWrite: false });
       const hatch = new THREE.LineBasicMaterial({ color: "#c6a77b", transparent: true, opacity: 0.42, fog: false, depthWrite: false });
       const rotY = Math.atan2(cam.x - pos.x, cam.z - pos.z);
-      return { key: s.id, pos, geo, scale, main, hatch, rotY };
+      return [{ key: s.id, pos, geo, scale, main, hatch, rotY }];
     });
   }, [curve]);
   const group = useRef<THREE.Group>(null);
@@ -208,6 +209,81 @@ export function HeroSkyline({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
         </group>
       ))}
     </group>
+  );
+}
+
+/** The hero camera (CAM_KEYS[0] composition) and its horizontal view direction. */
+function heroView(curve: THREE.Curve<THREE.Vector3>) {
+  const p0 = curve.getPointAt(0);
+  const t0 = curve.getTangentAt(0);
+  const head = new THREE.Vector3(t0.x, 0, t0.z).normalize();
+  const side = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), head).normalize();
+  const cam = p0.clone().addScaledVector(side, 10.2).addScaledVector(head, 11.6);
+  const view = new THREE.Vector3(p0.x - cam.x, 0, p0.z - cam.z).normalize();
+  return { cam, view };
+}
+
+/** A skyline monument that has a real model (taken from the stop that owns that engraving). */
+function heroModelFor(id: string) {
+  return STOPS.find((s) => s.engraving === id && s.model)?.model;
+}
+
+// Real models on the hero skyline: placed like the engravings (yaw/dist from the hero camera), sized
+// to the engraving's height, softened by the dawn haze. They rise out of the cloud sea with the
+// aircraft's entrance and sink back into it as the journey begins — the stop's own model then
+// rises at Delhi.
+const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: number; turn?: number }> = {
+  "india-gate": { yaw: -11, dist: 100, height: 25, turn: 18 },
+};
+
+function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; id: string }) {
+  const m = heroModelFor(id)!;
+  const place = HERO_MODEL_PLACEMENT[id] ?? { yaw: SKYLINE.find((s) => s.id === id)?.yaw ?? 0, dist: 170, height: 30 };
+  const { scene } = useGLTF(m.url);
+  const built = useMemo(() => {
+    const { cam, view } = heroView(curve);
+    const d = view.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), (place.yaw * Math.PI) / 180);
+    const pos = new THREE.Vector3(cam.x, 0, cam.z).addScaledVector(d, place.dist);
+    const toCam = Math.atan2(cam.x - pos.x, cam.z - pos.z);
+    const rotY = toCam - FACADE_YAW[m.facade ?? "+z"] + (((place.turn ?? m.yaw ?? 0) as number) * Math.PI) / 180;
+    const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+    const root = scene.clone(true);
+    root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
+      mat.clippingPlanes = [clip];
+      mat.envMapIntensity = 0.6;
+      mesh.material = mat;
+    });
+    return { root, pos, rotY, clip };
+  }, [scene, curve, place.yaw, place.dist, place.turn, m.facade, m.yaw]);
+  const group = useRef<THREE.Group>(null);
+  const shown = useRef(0);
+  useFrame((_, dt) => {
+    // rise with the hero entrance, sink as the journey begins
+    const k = 1 - smoothstep(0.012, 0.06, journey.current);
+    shown.current = Math.min(1, shown.current + Math.min(dt, 0.05) / 1.6);
+    const rise = Math.min(k, smoothstep(0, 1, Math.max(shown.current, stage.intro >= 1 ? 1 : 0)));
+    if (group.current) group.current.visible = rise > 0.001;
+    built.clip.constant = rise >= 0.999 ? place.height * 2 : place.height * 1.02 * rise;
+  });
+  return (
+    <group ref={group} position={built.pos} name={`hero-landmark-${id}`}>
+      <primitive object={built.root} rotation-y={built.rotY} scale={place.height} />
+    </group>
+  );
+}
+
+export function HeroLandmarkModels({ curve }: { curve: THREE.Curve<THREE.Vector3> }) {
+  return (
+    <>
+      {SKYLINE.filter((s) => heroModelFor(s.id)).map((s) => (
+        <Suspense key={s.id} fallback={null}>
+          <HeroLandmarkModel curve={curve} id={s.id} />
+        </Suspense>
+      ))}
+    </>
   );
 }
 

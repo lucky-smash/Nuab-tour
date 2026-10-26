@@ -205,12 +205,11 @@ export function Company() {
             <p className="mt-4 text-ink/75">{home.aboutParas[1]}</p>
             <Link href="/about/" className="mt-8 inline-flex items-center gap-2 font-semibold text-navy link-underline">About NUAB Tourism <ArrowRight className="size-4" aria-hidden /></Link>
           </div>
-          <div className="relative">
+          <div>
             {about.image && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={about.image} alt="IATA Certificate of Accreditation issued to NUAB Enterprises Private Limited" loading="lazy" className="aspect-[4/3] w-full border border-line object-contain bg-white" />
             )}
-            <Engraving id="india-gate" className="absolute -bottom-10 -left-8 hidden w-44 bg-white p-3 text-stone lg:block" />
           </div>
         </div>
 

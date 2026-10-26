@@ -6,7 +6,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { Aircraft } from "./Aircraft";
 import { AtlasGround, CloudSea, Clouds, Lights, Ridges, Sky } from "./Environment";
-import { Engravings, HeroSkyline, LandmarkModels, RouteLines, StopMarkers } from "./Landmarks";
+import { Engravings, HeroLandmarkModels, HeroSkyline, LandmarkModels, RouteLines, StopMarkers } from "./Landmarks";
 import { cameraKey, getCurve, journey, progressToU, lerp, stopFrames, stage } from "./journeyMath";
 import { STOPS } from "./config";
 
@@ -55,6 +55,7 @@ function Scene({ lite, onAircraftReady }: { lite: boolean; onAircraftReady?: () 
       <Engravings />
       <LandmarkModels />
       <HeroSkyline curve={curve} />
+      <HeroLandmarkModels curve={curve} />
       <FlightRig curve={curve} onAircraftReady={onAircraftReady} />
     </>
   );
@@ -88,6 +89,7 @@ function FlightRig({ curve, onAircraftReady }: { curve: THREE.CatmullRomCurve3; 
       camera: () => camera.position.toArray().map((n) => +n.toFixed(2)),
       set snap(v: boolean) { journey.snap = v; },
       scene,
+      cameraObject: camera,
       get intro() { return stage.intro; },
       frames: () => stopFrames().map((f) => ({ plane: f.plane.toArray(), head: f.head.toArray(), side: f.side.toArray(), camSign: f.camSign, engraving: f.engraving.toArray() })),
       project: () => stopFrames().map((f, i) => {

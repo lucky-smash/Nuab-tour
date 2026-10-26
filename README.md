@@ -48,6 +48,7 @@ Real 3D monuments can replace the line engravings, one stop at a time. India Gat
 
 - **Source:** `india-gate-lowpoly-3d-model.zip`, supplied by the client. The zip stays in `assets/source/` locally and is not committed; its extracted files are. It is a low-poly OBJ (653 triangles) with one 2048 px photographic texture. The extracted files are in `assets/source/india-gate/`. Confirm that the model's licence allows use on a commercial website before launch; the archive carries no licence or author information.
 - **Conversion:** `scripts/convert-landmark.mjs` centres the model on its base, scales it to a height of 1, converts the texture to WebP (keeping the alpha cut-outs for the Amar Jawan Jyoti rifles and finials) and writes a 274 KB GLB to `public/models/landmarks/india-gate.glb`.
+- **Hero:** any skyline monument with a model uses it instead of its engraving (`HeroLandmarkModels`, placed through `HERO_MODEL_PLACEMENT` in `Landmarks.tsx`).
 - **In the scene:** `LandmarkModels` in `src/components/journey/Landmarks.tsx` stands the model across from the aircraft, turned so its main arch faces the stop camera. It rises out of the atlas bottom-up as the aircraft approaches and sinks back in reverse. Clouds are kept off the monument and its sightline, and the stop's photo postcard is hidden because the model replaces it.
 
 To add another monument:
@@ -64,7 +65,7 @@ To add another monument:
 
 ## How the scroll journey works
 
-- **Hero scene:** the first viewport is a dawn flight above a cloud sea. A three-stop sky shader (zenith, sky blue, warm horizon) carries a sunrise glow placed behind the aircraft. A sunlit cloud deck dissolves as the journey begins, and four engraved monuments rise on the horizon. A CSS twin of the sky (`.sky-hero`) paints instantly, before WebGL. The copy rises in about one second, and the aircraft glides into its composition in about 1.8 seconds. There is no blocking intro screen.
+- **Hero scene:** the first viewport is a dawn flight above a cloud sea. A three-stop sky shader (zenith, sky blue, warm horizon) carries a sunrise glow placed behind the aircraft. A sunlit cloud deck dissolves as the journey begins. Engraved monuments line the horizon, and the real India Gate model rises out of the clouds beside the aircraft; it sinks back as the journey starts, just before the Delhi stop raises its own. A CSS twin of the sky (`.sky-hero`) paints instantly, before WebGL. The copy rises in about one second, and the aircraft glides into its composition in about 1.8 seconds. There is no blocking intro screen.
 - **Lighting:** a camera-relative warm key light, a sky and ground hemisphere fill, a sun rim light, and a soft reflection environment. Paint and metal finishes are tuned at runtime; the GLB itself is unchanged.
 
 - **Pace:** the journey section is 1020vh tall on desktop and 840vh on mobile, and the aircraft eases toward the scroll position with gentle damping, so it glides rather than jumps. Change the section height in `Journey.tsx` to make the whole flight faster or slower.
