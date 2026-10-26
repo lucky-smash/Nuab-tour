@@ -257,7 +257,8 @@ function Legend() {
         <li className="flex items-center gap-2"><span className="inline-block size-2.5 rounded-full border-2 border-navy bg-white" /> Featured journey stop</li>
         <li className="flex items-center gap-2"><span className="inline-block size-2 rounded-full bg-navy" /> Destination</li>
         <li className="flex items-center gap-2"><span className="inline-block w-5 border-t border-dashed border-navy" /> Journey line (illustrative, not a road)</li>
-        <li className="flex items-center gap-2"><Plane className="size-3 rotate-45 text-navy" aria-hidden /> Flights from Delhi (illustrative)</li>
+        <li className="flex items-center gap-2"><Plane className="size-3 rotate-45 text-navy" aria-hidden /> Domestic flights from Delhi (illustrative)</li>
+        <li className="flex items-center gap-2"><Plane className="size-3 rotate-45 text-coral" aria-hidden /> International flights: UAE, Thailand (illustrative)</li>
       </ul>
     </div>
   );

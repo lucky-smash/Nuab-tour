@@ -4,7 +4,9 @@ import type { AtlasDest } from "./atlasData";
 /**
  * Illustrative flights on the atlas: from the Delhi hub, small airliners take off in every
  * direction along gentle arcs to each visible destination, trailing a fading contrail, and land;
- * departures are staggered so the sky is never empty. Arcs are illustrative (like the journey
+ * departures are staggered so the sky is never empty. International flights (coral) to the UAE and
+ * Thailand always run, whatever the filters, so even the North India view shows them climbing out
+ * of Delhi; domestic flights (navy) follow the filters. Arcs are illustrative (like the journey
  * line) — no routes, airlines or schedules are implied. Reduced motion: the arcs only.
  */
 export const FLIGHT_HUB = { lng: 77.209, lat: 28.6139 };
@@ -15,7 +17,8 @@ export const PLANE_PATH =
   "M35 23L60 37L60 41.5L35 34.5Z M29 23L4 37L4 41.5L29 34.5Z" +
   "M34.5 50L44.5 56.5L44.5 59.5L33.5 56.5Z M29.5 50L19.5 56.5L19.5 59.5L30.5 56.5Z";
 
-type Flight = { id: string; pts: [number, number][]; dur: number; period: number; phase: number };
+type Flight = { id: string; intl: boolean; pts: [number, number][]; dur: number; period: number; phase: number };
+const NAVY = "#233a50", CORAL = "#c95f43"; // domestic / international
 type FeatureCollection = GeoJSON.FeatureCollection;
 
 const ARC_SAMPLES = 48;
@@ -58,8 +61,8 @@ function rng(seed: number) {
   };
 }
 
-/** top-down airliner, navy with a white keyline, pointing north */
-function planeImage(): ImageData {
+/** top-down airliner with a white keyline, pointing north */
+function planeImage(fill: string): ImageData {
   const s = 2, c = document.createElement("canvas");
   c.width = c.height = 64 * s;
   const g = c.getContext("2d")!;
@@ -69,7 +72,7 @@ function planeImage(): ImageData {
   g.lineWidth = 3.2;
   g.strokeStyle = "#ffffff";
   g.stroke(p);
-  g.fillStyle = "#233a50";
+  g.fillStyle = fill;
   g.fill(p);
   return g.getImageData(0, 0, c.width, c.height);
 }
@@ -83,26 +86,36 @@ export function startFlights(map: MLMap, dests: AtlasDest[], container: HTMLElem
     .filter((d) => Math.hypot(d.lng - hub.lng, d.lat - hub.lat) > 0.35)
     .map((d) => {
       const dist = Math.hypot(d.lng - hub.lng, d.lat - hub.lat);
-      const dur = Math.min(7.5, Math.max(2.4, 1.8 + dist * 0.22));
-      const period = dur + 1.6 + r() * 4.5;
-      return { id: d.id, pts: arc(hub, d), dur, period, phase: r() * period };
+      const intl = d.country !== "India";
+      const dur = Math.min(intl ? 9 : 7.5, Math.max(2.4, 1.8 + dist * 0.22));
+      const period = dur + (intl ? 1 : 1.6) + r() * (intl ? 3 : 4.5);
+      return { id: d.id, intl, pts: arc(hub, d), dur, period, phase: r() * period };
     });
+  const international = all.filter((f) => f.intl);
   let flights = all;
 
-  map.addImage("flight-plane", planeImage(), { pixelRatio: 2 });
+  map.addImage("flight-plane", planeImage(NAVY), { pixelRatio: 2 });
+  map.addImage("flight-plane-intl", planeImage(CORAL), { pixelRatio: 2 });
   map.addSource("flight-arcs", { type: "geojson", data: empty() });
   map.addSource("flight-trails", { type: "geojson", data: empty() });
   map.addSource("flight-planes", { type: "geojson", data: empty() });
+  // international destinations keep a small coral ring, so their arcs land somewhere even when
+  // the filters hide those markers
+  map.addSource("flight-ends", {
+    type: "geojson",
+    data: { type: "FeatureCollection", features: international.map((f) => ({ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: f.pts[ARC_SAMPLES] } })) },
+  });
   map.addSource("flight-hub", { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [hub.lng, hub.lat] } } });
-  map.addLayer({ id: "flight-arcs", type: "line", source: "flight-arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#233a50", "line-width": 0.9, "line-opacity": 0.22, "line-dasharray": [1, 3] } });
-  map.addLayer({ id: "flight-trails", type: "line", source: "flight-trails", layout: { "line-cap": "round" }, paint: { "line-color": "#233a50", "line-width": ["interpolate", ["linear"], ["zoom"], 3, 1.2, 8, 2], "line-opacity": ["get", "o"] } });
-  map.addLayer({ id: "flight-hub", type: "circle", source: "flight-hub", paint: { "circle-radius": 6, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#233a50", "circle-stroke-width": 1.2, "circle-stroke-opacity": 0 } });
+  map.addLayer({ id: "flight-arcs", type: "line", source: "flight-arcs", layout: { "line-cap": "round" }, paint: { "line-color": ["get", "c"], "line-width": 0.9, "line-opacity": ["get", "o"], "line-dasharray": [1, 3] } });
+  map.addLayer({ id: "flight-trails", type: "line", source: "flight-trails", layout: { "line-cap": "round" }, paint: { "line-color": ["get", "c"], "line-width": ["interpolate", ["linear"], ["zoom"], 3, 1.2, 8, 2], "line-opacity": ["get", "o"] } });
+  map.addLayer({ id: "flight-ends", type: "circle", source: "flight-ends", paint: { "circle-radius": 3.5, "circle-color": "#ffffff", "circle-stroke-color": CORAL, "circle-stroke-width": 1.4 } });
+  map.addLayer({ id: "flight-hub", type: "circle", source: "flight-hub", paint: { "circle-radius": 6, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": NAVY, "circle-stroke-width": 1.2, "circle-stroke-opacity": 0 } });
   map.addLayer({
     id: "flight-planes",
     type: "symbol",
     source: "flight-planes",
     layout: {
-      "icon-image": "flight-plane",
+      "icon-image": ["get", "img"],
       "icon-size": ["get", "s"],
       "icon-rotate": ["get", "b"],
       "icon-rotation-alignment": "map",
@@ -114,7 +127,7 @@ export function startFlights(map: MLMap, dests: AtlasDest[], container: HTMLElem
 
   const src = (id: string) => map.getSource(id) as GeoJSONSource | undefined;
   const drawArcs = () =>
-    src("flight-arcs")?.setData({ type: "FeatureCollection", features: flights.map((f) => ({ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: f.pts } })) });
+    src("flight-arcs")?.setData({ type: "FeatureCollection", features: flights.map((f) => ({ type: "Feature", properties: { c: f.intl ? CORAL : NAVY, o: f.intl ? 0.4 : 0.22 }, geometry: { type: "LineString", coordinates: f.pts } })) });
   drawArcs();
 
   // ---- animation ---------------------------------------------------------------------------------
@@ -132,11 +145,11 @@ export function startFlights(map: MLMap, dests: AtlasDest[], container: HTMLElem
       const k = local / f.dur, t = ease(k);
       const fade = Math.min(1, k / 0.06, (1 - k) / 0.06);
       const pos = along(f.pts, t), ahead = along(f.pts, Math.min(1, t + 0.01)), behind = along(f.pts, Math.max(0, t - 0.01));
-      planes.push({ type: "Feature", properties: { b: bearing(behind, ahead), s: 0.3 + 0.16 * Math.sin(Math.PI * t), o: fade }, geometry: { type: "Point", coordinates: pos } });
-      const t0 = Math.max(0, t - 0.2);
+      planes.push({ type: "Feature", properties: { img: f.intl ? "flight-plane-intl" : "flight-plane", b: bearing(behind, ahead), s: (f.intl ? 0.36 : 0.3) + 0.16 * Math.sin(Math.PI * t), o: fade }, geometry: { type: "Point", coordinates: pos } });
+      const t0 = Math.max(0, t - (f.intl ? 0.12 : 0.2));
       if (t - t0 > 0.005) {
         const coords = Array.from({ length: 11 }, (_, i) => along(f.pts, t0 + ((t - t0) * i) / 10));
-        trails.push({ type: "Feature", properties: { o: 0.5 * fade }, geometry: { type: "LineString", coordinates: coords } });
+        trails.push({ type: "Feature", properties: { c: f.intl ? CORAL : NAVY, o: (f.intl ? 0.65 : 0.5) * fade }, geometry: { type: "LineString", coordinates: coords } });
       }
     }
     src("flight-planes")?.setData({ type: "FeatureCollection", features: planes });
@@ -153,9 +166,9 @@ export function startFlights(map: MLMap, dests: AtlasDest[], container: HTMLElem
   if (!reduced) raf = requestAnimationFrame(frame);
 
   return {
-    /** fly only to the destinations currently shown by the filters */
+    /** domestic flights only to the destinations the filters show; international ones always */
     setVisible(ids: Set<string>) {
-      flights = all.filter((f) => ids.has(f.id));
+      flights = all.filter((f) => f.intl || ids.has(f.id));
       drawArcs();
     },
     stop() {
