@@ -241,6 +241,8 @@ const HERO_MODEL_PLACEMENT: Record<string, { yaw: number; dist: number; height: 
   "taj-mahal": { yaw: 0.5, dist: 210, height: 45, turn: 0, fog: false },
   // left of the nose: shikhara and entrance pavilions in three-quarter view
   temple: { yaw: 14, dist: 190, height: 34, turn: 30, fog: false },
+  // where its engraving stood, behind the hero copy (the paragraph sits on a .mist-pad so it stays legible)
+  "hawa-mahal": { yaw: 29, dist: 190, height: 24, turn: 8, fog: false },
 };
 
 function HeroLandmarkModel({ curve, id }: { curve: THREE.Curve<THREE.Vector3>; id: string }) {

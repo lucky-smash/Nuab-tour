@@ -183,6 +183,11 @@ a.pill:hover, button.pill:hover { border-color: var(--color-navy); background: v
 @keyframes hero-rise { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
 .hero-rise { opacity: 0; animation: hero-rise 0.9s var(--ease-atlas) forwards; animation-delay: var(--d, 0s); }
 @media (prefers-reduced-motion: reduce) { .hero-rise { opacity: 1; animation: none; } }
+/* Hero copy sits over 3D monuments on the skyline: a soft ivory mist behind the letters keeps it legible */
+.text-halo { text-shadow: 0 0 2px rgb(246 242 234 / 0.95), 0 0 10px rgb(246 242 234 / 0.9), 0 0 22px rgb(246 242 234 / 0.75); }
+/* a wisp of morning mist behind a text block (stays behind the letters inside the element's own stacking context) */
+.mist-pad { position: relative; isolation: isolate; }
+.mist-pad::before { content: ""; position: absolute; inset: -0.9rem -1.6rem; z-index: -1; border-radius: 999px; background: rgb(246 242 234 / 0.72); filter: blur(18px); pointer-events: none; }
 
 /* Engraving stroke-draw */
 .engrave path, .engrave polyline, .engrave line, .engrave circle, .engrave ellipse {

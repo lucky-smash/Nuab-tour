@@ -222,12 +222,12 @@ function HeroCopy({ coord, animate }: { coord: string; animate: boolean }) {
     <>
       <div {...r1} className={clsx(r1.className, "flex flex-wrap items-center gap-x-4 gap-y-3")}>
         <span className="pill pill-dark !py-1.5 !text-[0.72rem]"><span aria-hidden className="live-dot" /> Now boarding · Delhi → 5 iconic stops</span>
-        <span className="eyebrow !text-[0.72rem] !tracking-[0.2em] !text-navy">Your journey, thoughtfully planned</span>
+        <span className="eyebrow text-halo !text-[0.72rem] !tracking-[0.2em] !text-navy">Your journey, thoughtfully planned</span>
       </div>
       <h1 {...r2} className={clsx(r2.className, "mt-5 text-display-xl text-balance !text-midnight")}>
         India, <em className="not-italic" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>seen</em> differently.
       </h1>
-      <p {...r3} className={clsx(r3.className, "mt-6 max-w-[31rem] text-lede font-medium text-ink/85")}>
+      <p {...r3} className={clsx(r3.className, "mist-pad mt-6 max-w-[31rem] text-lede font-medium text-ink/85")}>
         Discover thoughtfully planned tours, iconic Indian destinations and comfortable travel experiences with NUAB Tourism.
       </p>
       <div {...r4} className={clsx(r4.className, "mt-8 flex flex-wrap gap-3")}>
@@ -247,7 +247,7 @@ function HeroCopy({ coord, animate }: { coord: string; animate: boolean }) {
           </li>
         ))}
       </ul>
-      <p {...r5} className={clsx(r5.className, "coord mt-6 hidden !text-navy/60 sm:block")}>{coord} — DEPARTING DELHI · IATA REGISTERED</p>
+      <p {...r5} className={clsx(r5.className, "coord text-halo mt-6 hidden !text-navy/60 sm:block")}>{coord} — DEPARTING DELHI · IATA REGISTERED</p>
     </>
   );
 }
