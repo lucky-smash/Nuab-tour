@@ -14,7 +14,7 @@ function credit(p?: { author: string; license: string; sourceUrl: string }) {
 
 function BookingAside({ title, price, basis, booking, note }: { title: string; price: string | null; basis: string | null; booking?: string | null; note?: string }) {
   return (
-    <aside className="border border-line bg-white p-6 lg:sticky lg:top-28">
+    <aside className="relative z-10 shrink-0 border border-line bg-white p-6">
       <p className="font-mono text-[0.64rem] uppercase tracking-[0.14em] text-stone">Fare</p>
       {price ? (
         <p className="mt-2 font-display text-4xl text-navy">{price}<span className="ml-2 font-sans text-sm text-muted">{basis}</span></p>
@@ -35,6 +35,23 @@ function BookingAside({ title, price, basis, booking, note }: { title: string; p
         ))}
       </div>
     </aside>
+  );
+}
+
+/**
+ * Right-hand rail of the tour pages: the fare card with the tour's monument engraving below it, held
+ * together as one sticky composition (desktop). The rail sits in the grid column, so it stops at the end
+ * of the tour content and never rides over the related-journeys section or the footer. Its height is capped
+ * to the viewport below the nav: the card keeps its size and the monument shrinks to the space left
+ * (in proportion, from the top), or steps aside on very short screens. Phones and tablets keep the card in
+ * the page flow, after the content, with no monument.
+ */
+function BookingRail({ engraving, ...aside }: Parameters<typeof BookingAside>[0] & { engraving: string }) {
+  return (
+    <div className="lg:sticky lg:top-28 lg:flex lg:max-h-[calc(100dvh-8.5rem)] lg:flex-col">
+      <BookingAside {...aside} />
+      <Engraving id={engraving} preserveAspectRatio="xMidYMin meet" className="pointer-events-none mt-10 hidden min-h-0 w-full shrink text-stone/70 lg:block [@media(max-height:640px)]:!hidden" />
+    </div>
   );
 }
 
@@ -133,8 +150,7 @@ export function DayTourPage({ t }: { t: DayTour }) {
           <FaqList faqs={t.faqs} />
         </div>
         <div>
-          <BookingAside title={t.title} price={t.fromPrice ? `${formatINR(t.fromPrice)}` : null} basis={t.fromPrice ? `from, ${t.fareUnit}` : null} booking={t.bookingLink} />
-          <Engraving id={v.engraving} className="mt-10 hidden w-full text-stone/70 lg:block" />
+          <BookingRail engraving={v.engraving} title={t.title} price={t.fromPrice ? `${formatINR(t.fromPrice)}` : null} basis={t.fromPrice ? `from, ${t.fareUnit}` : null} booking={t.bookingLink} />
         </div>
       </div>
 
@@ -244,8 +260,7 @@ export function MultiDayPage({ t }: { t: MultiDayTour }) {
           <FaqList faqs={t.faqs} />
         </div>
         <div>
-          <BookingAside title={t.title} price={t.fromPrice ? formatINR(t.fromPrice) : null} basis={t.fromPrice ? `from, ${t.pricing?.basis}` : null} note={t.pricing ? undefined : "This package is quoted on request for your dates and group size."} />
-          <Engraving id={v.engraving} className="mt-10 hidden w-full text-stone/70 lg:block" />
+          <BookingRail engraving={v.engraving} title={t.title} price={t.fromPrice ? formatINR(t.fromPrice) : null} basis={t.fromPrice ? `from, ${t.pricing?.basis}` : null} note={t.pricing ? undefined : "This package is quoted on request for your dates and group size."} />
         </div>
       </div>
 
