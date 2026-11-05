@@ -13,4 +13,9 @@ const buf = await page.locator("canvas").screenshot({ omitBackground: true });
 await sharp(buf).trim({ threshold: 1 }).resize({ width: 1600, withoutEnlargement: true }).png({ compressionLevel: 9 }).toFile("public/media/aircraft-hero.png");
 const m = await sharp("public/media/aircraft-hero.png").metadata();
 console.log("aircraft-hero.png", m.width, "x", m.height);
+// the page serves these (srcset in Journey.tsx StaticJourney): ~25–50 KB instead of the ~300 KB PNG
+for (const w of [800, 1200, 1600]) {
+  await sharp("public/media/aircraft-hero.png").resize(w).webp({ quality: 82, alphaQuality: 90, effort: 6 }).toFile(`public/media/aircraft-hero-${w}.webp`);
+}
+console.log("aircraft-hero-{800,1200,1600}.webp written");
 await browser.close();

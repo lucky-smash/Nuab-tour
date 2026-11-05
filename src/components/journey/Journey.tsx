@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, ArrowRight, ArrowUpRight, MapPin } from "lucide-react";
 import { Engraving } from "@/components/engraving/Engraving";
 import { clsx } from "@/lib/site";
-import { journey } from "./journeyMath";
+import { journey } from "./journeyState";
 import { HERO_END, ARRIVAL_P } from "./config";
 import type { StopVM, TourVM, PhotoVM } from "./viewModel";
 import { useEnquiry } from "@/components/ui/Enquiry";
@@ -19,12 +19,27 @@ const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : use
 
 type Mode = "pending" | "static" | "immersive";
 
-function supportsWebGL() {
+/**
+ * "hardware" when WebGL runs on a GPU, "software" when the browser would draw it on the CPU
+ * (SwiftShader, llvmpipe, blocklisted drivers — no graphics acceleration), "none" without WebGL.
+ * In software every shader compile and every frame blocks the page for 100+ ms, so those devices
+ * get the still journey instead of a frozen one.
+ */
+function webglSupport(): "hardware" | "software" | "none" {
   try {
     const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+    const fast = { failIfMajorPerformanceCaveat: true };
+    const gl = (c.getContext("webgl2", fast) ?? c.getContext("webgl", fast)) as WebGLRenderingContext | null;
+    if (!gl) {
+      const any = document.createElement("canvas");
+      return any.getContext("webgl2") || any.getContext("webgl") ? "software" : "none";
+    }
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer) ? "software" : "hardware";
   } catch {
-    return false;
+    return "none";
   }
 }
 
@@ -39,10 +54,11 @@ export function Journey({ stops, destinationCount, heroCoord }: { stops: StopVM[
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const webgl = supportsWebGL();
+    const webgl = webglSupport();
     if (params.has("no3d")) { setStaticReason("3D disabled"); setMode("static"); }
     else if (reduced) { setStaticReason("Reduced motion is on — showing the still journey."); setMode("static"); }
-    else if (!webgl) { setStaticReason("Your browser could not start 3D — showing the still journey."); setMode("static"); }
+    else if (webgl === "none") { setStaticReason("Your browser could not start 3D — showing the still journey."); setMode("static"); }
+    else if (webgl === "software") { setStaticReason("3D needs graphics acceleration, which is off on this device — showing the still journey."); setMode("static"); }
     else {
       const nav = navigator as Navigator & { deviceMemory?: number };
       setLite(window.innerWidth < 820 || (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4);
@@ -451,7 +467,12 @@ function StaticJourney({ stops, heroCoord, note }: { stops: StopVM[]; heroCoord:
           </div>
           <figure className="relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/media/aircraft-hero.png" alt="The NUAB Tourism aircraft in white and navy livery" className="relative w-full drop-shadow-[0_30px_40px_rgb(23_43_61/.25)]" width={1600} height={568} />
+            <img
+              src="/media/aircraft-hero-1200.webp"
+              srcSet="/media/aircraft-hero-800.webp 800w, /media/aircraft-hero-1200.webp 1200w, /media/aircraft-hero-1600.webp 1600w"
+              sizes="(min-width: 1024px) 52vw, 92vw"
+              alt="The NUAB Tourism aircraft in white and navy livery"
+              className="relative w-full drop-shadow-[0_30px_40px_rgb(23_43_61/.25)]" width={1600} height={568} />
           </figure>
         </div>
       </div>

@@ -22,7 +22,9 @@ export function Wordmark({ className, inverted = false, size = "md" }: { classNa
       </span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={inverted ? "/brand/nuab-tourism-logo-light.png" : "/brand/nuab-tourism-logo.png"}
+        src={`/brand/nuab-tourism-logo${inverted ? "-light" : ""}-252.png`}
+        srcSet={`/brand/nuab-tourism-logo${inverted ? "-light" : ""}-126.png 126w, /brand/nuab-tourism-logo${inverted ? "-light" : ""}-252.png 252w`}
+        sizes={lg ? "129px" : "93px"}
         alt="NUAB Tourism — a division of NUAB Enterprises Pvt. Ltd."
         width={252}
         height={125}

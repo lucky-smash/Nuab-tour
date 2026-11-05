@@ -1,24 +1,9 @@
 import * as THREE from "three";
 import { STOPS, STOP_WAYPOINT_INDEX, flightWaypoints, ARRIVAL_P } from "./config";
 
-/**
- * Shared, mutable journey state. Written by the ScrollTrigger (DOM side) and read inside
- * useFrame (WebGL side) — no React state, so scrolling never re-renders the React tree.
- */
-export const journey = {
-  /** raw scroll progress 0..1 from ScrollTrigger */
-  target: 0,
-  /** damped progress used for rendering */
-  current: 0,
-  /** set when the stage is offscreen so the render loop can idle */
-  visible: true,
-  /** reduced complexity (mobile / low-power) */
-  lite: false,
-  /** narrow (portrait) composition */
-  portrait: false,
-  /** QA: skip damping so screenshots show the settled pose immediately */
-  snap: false,
-};
+import { journey } from "./journeyState";
+
+export { journey };
 
 /**
  * Shared 3D stage state (WebGL side only). The sun direction is chosen once, from the hero
