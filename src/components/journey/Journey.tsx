@@ -88,6 +88,11 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
   const [active, setActive] = useState(true);
   const [ready, setReady] = useState(false);
   const [current, setCurrent] = useState<string>("hero");
+  // Panels near the scroll position ("|"-joined ids). The others keep content-visibility: hidden, so
+  // the browser doesn't lay out five invisible stop cards on page load (~2 s on a mid-range phone);
+  // the window is wider than each panel's fade, so a panel is laid out before it appears.
+  const [awake, setAwake] = useState("");
+  const awakeAt = (p: number) => [...stops.filter((s) => Math.abs(p - s.p) < 0.16).map((s) => s.id), ...(p > ARRIVAL_P - 0.16 ? ["arrival"] : [])].join("|");
 
   // Only render frames while the stage is on screen.
   useEffect(() => {
@@ -116,9 +121,12 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
           for (const s of stops) if (Math.abs(self.progress - s.p) < 0.07) id = s.id;
           if (self.progress > ARRIVAL_P - 0.015) id = "arrival";
           setCurrent((c) => (c === id ? c : id));
+          const a = awakeAt(self.progress);
+          setAwake((w) => (w === a ? w : a));
         },
       });
       journey.target = st.progress;
+      setAwake(awakeAt(st.progress));
       // initial rail state (e.g. a reload part-way down the page), before the first scroll event
       if (fill.current) fill.current.style.transform = `scaleY(${st.progress})`;
       if (pin.current) pin.current.style.top = `${st.progress * 100}%`;
@@ -200,9 +208,9 @@ function ImmersiveJourney({ stops, lite, enable3d, destinationCount, heroCoord }
 
         <HeroPanel coord={heroCoord} />
         {stops.map((s) => (
-          <StopPanel key={s.id} stop={s} current={current === s.id} index={stops.indexOf(s) + 1} />
+          <StopPanel key={s.id} stop={s} current={current === s.id} dormant={!awake.split("|").includes(s.id)} index={stops.indexOf(s) + 1} />
         ))}
-        <ArrivalPanel destinationCount={destinationCount} current={current === "arrival"} />
+        <ArrivalPanel destinationCount={destinationCount} current={current === "arrival"} dormant={!awake.split("|").includes("arrival")} />
 
         <ProgressRail stops={stops} fill={fill} pin={pin} current={current} onGo={goTo} />
         <div data-hero-scroll className="pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-navy md:flex">
@@ -287,14 +295,14 @@ function HeroPanel({ coord }: { coord: string }) {
   );
 }
 
-function StopPanel({ stop, current, index }: { stop: StopVM; current: boolean; index: number }) {
+function StopPanel({ stop, current, dormant, index }: { stop: StopVM; current: boolean; dormant: boolean; index: number }) {
   const right = stop.layout === "right";
   const stops_index = () => index;
   return (
     <article
       data-panel={stop.id}
       aria-labelledby={`stop-${stop.id}`}
-      className="invisible absolute inset-0 opacity-0"
+      className={clsx("invisible absolute inset-0 opacity-0", dormant && "[content-visibility:hidden]")}
       aria-hidden={!current}
     >
       <div className={clsx("absolute inset-x-0 bottom-0 md:inset-y-0 md:flex md:items-center md:pb-4 md:pt-24", right ? "md:justify-end" : "md:justify-start")}>
@@ -392,9 +400,9 @@ export function Postcard({ photo, title, className }: { photo: PhotoVM; title: s
   );
 }
 
-function ArrivalPanel({ destinationCount, current }: { destinationCount: number; current: boolean }) {
+function ArrivalPanel({ destinationCount, current, dormant }: { destinationCount: number; current: boolean; dormant: boolean }) {
   return (
-    <div data-panel="arrival" aria-hidden={!current} className="invisible absolute inset-0 flex items-center justify-center opacity-0">
+    <div data-panel="arrival" aria-hidden={!current} className={clsx("invisible absolute inset-0 flex items-center justify-center opacity-0", dormant && "[content-visibility:hidden]")}>
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgb(255_255_255/.85),rgb(255_255_255/.35)_55%,transparent_75%)]" />
       <div className="relative max-w-2xl px-6 text-center">
         <p className="coord">30°45′ N · 78°24′ E — GARHWAL HIMALAYA</p>
@@ -478,7 +486,7 @@ function StaticJourney({ stops, heroCoord, note }: { stops: StopVM[]; heroCoord:
       </div>
       <ol className="container-x divide-y divide-line">
         {stops.map((s, i) => (
-          <li key={s.id} id={`stop-${s.id}`} className="grid gap-10 py-20 lg:grid-cols-2 lg:gap-16">
+          <li key={s.id} id={`stop-${s.id}`} className="grid gap-10 py-20 [contain-intrinsic-size:auto_1100px] [content-visibility:auto] lg:grid-cols-2 lg:gap-16">
             <div className={clsx(i % 2 === 1 && "lg:order-2")}>
               <StopBody stop={s} headingLevel="h2" index={i + 1} total={stops.length} />
             </div>
