@@ -101,7 +101,9 @@ export function MapView({
     let cancelled = false;
     let map: MLMap | null = null;
     let timeout: ReturnType<typeof setTimeout>;
-    (async () => {
+    // The atlas sits far below the fold: MapLibre, its tiles and label glyphs (~1.3 MB) load only
+    // once the map comes within ~1.5 screens of the viewport, not with the page.
+    const init = async () => {
       try {
         const ml = await import("maplibre-gl");
         if (cancelled || !el.current) return;
@@ -154,7 +156,21 @@ export function MapView({
         console.warn("map init failed", err);
         onStatus("failed");
       }
-    })();
+    };
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver === "undefined" || !el.current) init();
+    else {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io?.disconnect();
+          io = null;
+          init();
+        },
+        { rootMargin: "1200px 0px" },
+      );
+      io.observe(el.current);
+    }
     const updateDensity = () => {
       const z = map?.getZoom() ?? 5;
       el.current?.setAttribute("data-zoom", z < 6.2 ? "low" : z < 7.8 ? "mid" : "high");
@@ -162,6 +178,7 @@ export function MapView({
     const markerMap = markers.current;
     return () => {
       cancelled = true;
+      io?.disconnect();
       clearTimeout(timeout);
       markerMap.forEach(({ marker }) => marker.remove());
       markerMap.clear();

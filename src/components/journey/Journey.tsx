@@ -316,7 +316,9 @@ export function StopBody({ stop, headingLevel = "h2", compact = false, index, to
       <p className={clsx("mt-4 text-[1.02rem] leading-relaxed text-ink/85", compact && "line-clamp-3 md:line-clamp-4")}>{stop.intro}</p>
       <TourList tours={compact ? stop.tours.slice(0, 3) : stop.tours} className="mt-6" compactOnMobile={compact} />
       <div className="mt-6 flex flex-wrap gap-3">
-        <Link href={stop.destinationHref} className="btn btn-primary">
+        {/* prefetch off: the stop panels are stacked (invisible) over the hero, so every link in them
+            counts as on-screen and would prefetch ~25 pages on load */}
+        <Link href={stop.destinationHref} prefetch={false} className="btn btn-primary">
           Explore {stop.destinationLabel} <ArrowRight className="size-4" aria-hidden />
         </Link>
         <button type="button" className="btn btn-ghost bg-white/60" onClick={() => openEnquiry(`${stop.title} tours`)}>
@@ -333,7 +335,7 @@ export function TourList({ tours, className, compactOnMobile = false }: { tours:
       {tours.map((t, i) => (
         <li key={t.href} className={clsx("flex items-center gap-4 py-3", compactOnMobile && i > 1 && "hidden md:flex")}>
           <div className="min-w-0 flex-1">
-            <Link href={t.href} className="block truncate text-[0.95rem] font-semibold text-navy hover:underline underline-offset-4">
+            <Link href={t.href} prefetch={false} className="block truncate text-[0.95rem] font-semibold text-navy hover:underline underline-offset-4">
               {t.title}
             </Link>
             <p className="mt-0.5 font-mono text-[0.68rem] uppercase tracking-[0.08em] text-muted">{t.kind} · {t.duration}</p>

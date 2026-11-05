@@ -18,7 +18,7 @@ export function Wordmark({ className, inverted = false, size = "md" }: { classNa
         )}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- small brand PNGs, nothing for next/image to gain */}
-        <img src="/brand/nuab-icon.png" alt="" width={512} height={512} decoding="async" className="w-[74%] select-none" draggable={false} />
+        <img src="/brand/nuab-icon-144.png" alt="" width={144} height={144} decoding="async" className="w-[74%] select-none" draggable={false} />
       </span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
